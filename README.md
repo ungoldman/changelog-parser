@@ -1,3 +1,3 @@
 # changelogic
 
-CHANGELOG.md parser (wip).
+Change log parser for node (wip).
