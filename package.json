@@ -1,0 +1,22 @@
+{
+  "name": "changelogic",
+  "version": "1.0.0",
+  "description": "CHANGELOG.md parser (wip).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngoldman/changelogic.git"
+  },
+  "keywords": [
+    "changelog"
+  ],
+  "author": "Nate Goldman <nate@ngoldman.me>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ngoldman/changelogic/issues"
+  },
+  "homepage": "https://github.com/ngoldman/changelogic"
+}
