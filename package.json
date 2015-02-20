@@ -1,22 +1,27 @@
 {
   "name": "changelogic",
-  "version": "1.0.0",
   "description": "Change log parser for node (wip).",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "1.0.0",
+  "author": "Nate Goldman <nate@ngoldman.me>",
+  "bugs": {
+    "url": "https://github.com/ngoldman/changelogic/issues"
   },
+  "devDependencies": {
+    "standard": "^2.6.5",
+    "standard-format": "^1.2.0"
+  },
+  "homepage": "https://github.com/ngoldman/changelogic",
+  "keywords": [
+    "changelog"
+  ],
+  "license": "ISC",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ngoldman/changelogic.git"
   },
-  "keywords": [
-    "changelog"
-  ],
-  "author": "Nate Goldman <nate@ngoldman.me>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ngoldman/changelogic/issues"
-  },
-  "homepage": "https://github.com/ngoldman/changelogic"
+  "scripts": {
+    "format": "standard-format -w",
+    "test": "standard && node test"
+  }
 }
