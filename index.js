@@ -6,7 +6,11 @@ var current
 module.exports = function parse (file, callback) {
   lineReader.eachLine(file, handleLine).then(function () {
     // push last version into log
-    log.versions.push(current)
+    pushCurrent()
+
+    // clean up description
+    log.description = clean(log.description)
+
     callback(null, log)
   })
 }
@@ -23,7 +27,7 @@ function handleLine (line) {
 
   // new version found!
   if (line.match(/^## ?[^#]/)) {
-    if (current && current.version) log.versions.push(current)
+    if (current && current.version) pushCurrent()
 
     current = versionFactory()
 
@@ -35,9 +39,9 @@ function handleLine (line) {
 
   // deal with body or description content
   if (current) {
-    current.body = trimBody(current.body) + line + '\n'
+    current.body += line + '\n'
   } else {
-    log.description = trimBody(log.description) + line + '\n'
+    log.description = (log.description || '') + line + '\n'
   }
 }
 
@@ -48,13 +52,18 @@ function versionFactory () {
   }
 }
 
-function trimBody (body) {
-  if (!body) return ''
+function pushCurrent () {
+  current.body = clean(current.body)
+  log.versions.push(current)
+}
 
-  // get rid of leading newlines
-  body = body.replace(/^[\n]*/, '')
-  // reduce trailing newlines to one
-  body = body.replace(/[\n]*$/, '\n')
+function clean (str) {
+  if (!str) return ''
 
-  return body
+  // remove leading newlines
+  str = str.replace(/^[\n]*/, '')
+  // remove trailing newlines
+  str = str.replace(/[\n]*$/, '')
+
+  return str
 }
