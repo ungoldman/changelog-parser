@@ -1,6 +1,6 @@
-var changelogic = require('..')
+var parseChangelog = require('..')
 
-changelogic(__dirname + '/CHANGELOG.md', function (err, result) {
+parseChangelog(__dirname + '/CHANGELOG.md', function (err, result) {
   if (err) throw err
 
   console.log(result)
