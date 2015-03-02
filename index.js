@@ -1,87 +1,59 @@
-var marked = require('marked')
 var lineReader = require('line-reader')
-var toMarkdown = require('to-markdown').toMarkdown
-var cheerio = require('cheerio')
-var regex = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]? .*?(\d{4}-\d{2}-\d{2}|\w+)/
-var log
-var $
+var semver = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
+var log = { versions: [] }
+var current
 
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: true,
-  smartLists: true
-})
-
-module.exports = function parse (file) {
-  //log = file
-  //$ = cheerio.load(marked(file))
-
-  //return {
-    //title: getTitle(),
-    //versions: getVersions()
-  //}
-// read all lines:
-  var title;
-  var versions = [];
-  var currentVersion = {}
-  var currentBody = ''
-
-  return lineReader.eachLine(file, function(line) {
-    if (!title && line[0] == '#') {
-      title = line.substring(1).trim()
-      return
-    }
-
-    var version = regex.exec(line)
-    if (version) {
-      currentVersion.body = currentBody
-      versions.push(currentVersion)
-      currentBody = ''
-      currentVersion = {version: version[1]}
-    } else {
-      currentBody += line.trim()
-    }
-  }).then(function () {
-    currentVersion.body = currentBody
-    versions.push(currentVersion)
-    console.log(versions)
-    return {
-      title: title,
-      versions: versions
-    }
+module.exports = function parse (file, callback) {
+  lineReader.eachLine(file, handleLine).then(function () {
+    // push last version into log
+    log.versions.push(current)
+    callback(null, log)
   })
 }
 
+function handleLine (line) {
+  // skip line if it's a link label
+  if (line.match(/^\[[^\[\]]*\] *?:/)) return
 
+  // set title if it's there
+  if (!log.title && line.match(/^# ?[^#]/)) {
+    log.title = line.substring(1).trim()
+    return
+  }
 
+  // new version found!
+  if (line.match(/^## ?[^#]/)) {
+    if (current && current.version) log.versions.push(current)
 
+    current = versionFactory()
 
+    if (semver.exec(line)) current.version = semver.exec(line)[1]
+    else current.version = line.substring(2).trim()
 
+    return
+  }
 
-function getTitle () {
-  return $('h1').text()
+  if (current) {
+    current.body = trimBody(current.body) + line + '\n'
+  } else {
+    log.description = trimBody(log.description) + line + '\n'
+  }
 }
 
-function getVersions () {
-  var arr = []
-
-  var versions = $('h2').filter(function () {
-    return regex.test($(this).text())
-  })
-
-  versions.each(function () {
-    var version = $(this).text()
-    arr.push({
-      version: version,
-      body: getBody(version)
-    })
-  })
-
-  return arr
+function versionFactory () {
+  return {
+    version: null,
+    body: ''
+  }
 }
 
-function getBody (version) {
-  // stuff each line past version into a string until we get to another ##
+function trimBody (body) {
+  if (!body) return ''
+
+  // get rid of leading newlines
+  body = body.replace(/^[\n]*/, '')
+  // reduce trailing newlines to one
+  body = body.replace(/[\n]*$/, '\n')
+
+  return body
 }

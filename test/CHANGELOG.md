@@ -1,5 +1,9 @@
 # test changelog
 
+A cool description.
+
+## Unreleased
+
 ## [3.0.0] - Unreleased
 
 ### Changes
