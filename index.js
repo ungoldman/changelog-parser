@@ -1,4 +1,5 @@
 var marked = require('marked')
+var lineReader = require('line-reader')
 var toMarkdown = require('to-markdown').toMarkdown
 var cheerio = require('cheerio')
 var regex = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]? .*?(\d{4}-\d{2}-\d{2}|\w+)/
@@ -14,14 +15,50 @@ marked.setOptions({
 })
 
 module.exports = function parse (file) {
-  log = file
-  $ = cheerio.load(marked(file))
+  //log = file
+  //$ = cheerio.load(marked(file))
 
-  return {
-    title: getTitle(),
-    versions: getVersions()
-  }
+  //return {
+    //title: getTitle(),
+    //versions: getVersions()
+  //}
+// read all lines:
+  var title;
+  var versions = [];
+  var currentVersion = {}
+  var currentBody = ''
+
+  return lineReader.eachLine(file, function(line) {
+    if (!title && line[0] == '#') {
+      title = line.substring(1).trim()
+      return
+    }
+
+    var version = regex.exec(line)
+    if (version) {
+      currentVersion.body = currentBody
+      versions.push(currentVersion)
+      currentBody = ''
+      currentVersion = {version: version[1]}
+    } else {
+      currentBody += line.trim()
+    }
+  }).then(function () {
+    currentVersion.body = currentBody
+    versions.push(currentVersion)
+    console.log(versions)
+    return {
+      title: title,
+      versions: versions
+    }
+  })
 }
+
+
+
+
+
+
 
 function getTitle () {
   return $('h1').text()

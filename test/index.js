@@ -4,4 +4,4 @@ var testLog = fs.readFileSync(__dirname + '/CHANGELOG.md', {
   encoding: 'utf-8'
 })
 
-console.log(changelogic(testLog))
+console.log(changelogic(__dirname + '/CHANGELOG.md'))
