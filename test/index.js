@@ -1,7 +1,7 @@
-var fs = require('fs')
-var changelogic = require('..')
-var testLog = fs.readFileSync(__dirname + '/CHANGELOG.md', {
-  encoding: 'utf-8'
-})
+var parseChangelog = require('..')
 
-console.log(changelogic(testLog))
+parseChangelog(__dirname + '/CHANGELOG.md', function (err, result) {
+  if (err) throw err
+
+  console.log(result)
+})

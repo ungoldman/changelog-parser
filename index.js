@@ -1,43 +1,60 @@
-var marked = require('marked')
-var toMarkdown = require('to-markdown').toMarkdown
-var cheerio = require('cheerio')
-var regex = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]? .*?(\d{4}-\d{2}-\d{2}|\w+)/
-var $
+var lineReader = require('line-reader')
+var semver = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
+var log = { versions: [] }
+var current
 
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: true,
-  smartLists: true
-})
+module.exports = function parse (file, callback) {
+  lineReader.eachLine(file, handleLine).then(function () {
+    // push last version into log
+    log.versions.push(current)
+    callback(null, log)
+  })
+}
 
-module.exports = function parse (file) {
-  $ = cheerio.load(marked(file))
+function handleLine (line) {
+  // skip line if it's a link label
+  if (line.match(/^\[[^\[\]]*\] *?:/)) return
 
-  return {
-    title: getTitle(),
-    versions: getVersions()
+  // set title if it's there
+  if (!log.title && line.match(/^# ?[^#]/)) {
+    log.title = line.substring(1).trim()
+    return
+  }
+
+  // new version found!
+  if (line.match(/^## ?[^#]/)) {
+    if (current && current.version) log.versions.push(current)
+
+    current = versionFactory()
+
+    if (semver.exec(line)) current.version = semver.exec(line)[1]
+    else current.version = line.substring(2).trim()
+
+    return
+  }
+
+  // deal with body or description content
+  if (current) {
+    current.body = trimBody(current.body) + line + '\n'
+  } else {
+    log.description = trimBody(log.description) + line + '\n'
   }
 }
 
-function getTitle () {
-  return $('h1').text()
+function versionFactory () {
+  return {
+    version: null,
+    body: ''
+  }
 }
 
-function getVersions () {
-  var arr = []
+function trimBody (body) {
+  if (!body) return ''
 
-  var versions = $('h2').filter(function () {
-    return regex.test($(this).text())
-  })
+  // get rid of leading newlines
+  body = body.replace(/^[\n]*/, '')
+  // reduce trailing newlines to one
+  body = body.replace(/[\n]*$/, '\n')
 
-  versions.each(function () {
-    arr.push({
-      version: $(this).text(),
-      body: toMarkdown($(this).nextUntil('h2').html())
-    })
-  })
-
-  return arr
+  return body
 }

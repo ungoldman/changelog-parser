@@ -1,6 +1,16 @@
-# test changelog
+# changelog title
 
-## [3.0.0] - Unreleased
+A cool description (optional).
+
+## unreleased
+* foo
+
+## x.y.z - YYYY-MM-DD
+* bar
+
+## [a.b.c]
+
+### Changes
 * Update API
 * Fix bug #1
 
@@ -12,4 +22,7 @@
 * woof
 * arf
 
-[3.0.0]: http://npmpjs.com
+## [1.2.3](link)
+* init
+
+[a.b.c]: http://altavista.com
