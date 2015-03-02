@@ -2,6 +2,7 @@ var marked = require('marked')
 var toMarkdown = require('to-markdown').toMarkdown
 var cheerio = require('cheerio')
 var regex = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]? .*?(\d{4}-\d{2}-\d{2}|\w+)/
+var log
 var $
 
 marked.setOptions({
@@ -13,6 +14,7 @@ marked.setOptions({
 })
 
 module.exports = function parse (file) {
+  log = file
   $ = cheerio.load(marked(file))
 
   return {
@@ -33,11 +35,16 @@ function getVersions () {
   })
 
   versions.each(function () {
+    var version = $(this).text()
     arr.push({
-      version: $(this).text(),
-      body: toMarkdown($(this).nextUntil('h2').html())
+      version: version,
+      body: getBody(version)
     })
   })
 
   return arr
+}
+
+function getBody (version) {
+  // stuff each line past version into a string until we get to another ##
 }

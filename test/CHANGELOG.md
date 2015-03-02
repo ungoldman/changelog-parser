@@ -1,6 +1,8 @@
 # test changelog
 
 ## [3.0.0] - Unreleased
+
+### Changes
 * Update API
 * Fix bug #1
 
