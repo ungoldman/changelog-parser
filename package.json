@@ -6,6 +6,13 @@
   "bugs": {
     "url": "https://github.com/ngoldman/changelog-parser/issues"
   },
+  "contributors": [
+    "Nate Goldman <nate@ngoldman.me>",
+    "Rachel Nehmer <kneemer@gmail.com>"
+  ],
+  "dependencies": {
+    "line-reader": "^0.2.4"
+  },
   "devDependencies": {
     "standard": "^2.6.5",
     "standard-format": "^1.2.0"
@@ -23,8 +30,5 @@
   "scripts": {
     "format": "standard-format -w",
     "test": "standard && node test"
-  },
-  "dependencies": {
-    "line-reader": "^0.2.4"
   }
 }
