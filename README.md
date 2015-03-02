@@ -1,5 +1,8 @@
 # changelog-parser
 
+[![](https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square)](https://www.npmjs.com/package/changelog-parser)
+[![](https://img.shields.io/travis/ngoldman/changelog-parser.svg?style=flat-square)](https://travis-ci.org/ngoldman/changelog-parser)
+
 Change log parser for node.
 
 ## Usage
