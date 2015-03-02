@@ -1,10 +1,14 @@
-# test changelog
+# changelog title
 
-A cool description.
+A cool description (optional).
 
-## Unreleased
+## unreleased
+* foo
 
-## [3.0.0] - Unreleased
+## x.y.z - YYYY-MM-DD
+* bar
+
+## [a.b.c]
 
 ### Changes
 * Update API
@@ -18,4 +22,7 @@ A cool description.
 * woof
 * arf
 
-[3.0.0]: http://npmpjs.com
+## [1.2.3](link)
+* init
+
+[a.b.c]: http://altavista.com
