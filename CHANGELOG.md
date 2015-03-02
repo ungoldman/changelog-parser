@@ -1,4 +1,4 @@
-# changelogic changelog
+# changelog-parser changelog
 
-## unreleased
+## 1.0.0
 * init

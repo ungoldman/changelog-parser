@@ -33,6 +33,7 @@ function handleLine (line) {
     return
   }
 
+  // deal with body or description content
   if (current) {
     current.body = trimBody(current.body) + line + '\n'
   } else {
