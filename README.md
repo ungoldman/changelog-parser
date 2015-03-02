@@ -50,32 +50,20 @@ description (optional)
 Parsing the above example will return the following object:
 
 ```js
-{
+{ versions:
+   [ { version: 'unreleased', body: '* foo' },
+     { version: 'x.y.z', body: '* bar' },
+     { version: 'a.b.c',
+       body: '### Changes\n\n* Update API\n* Fix bug #1' },
+     { version: '2.2.3-pre.1', body: '* Update API' },
+     { version: '1.0.0-x.7.z.92',
+       body: '* bark bark\n* woof\n* arf' },
+     { version: '1.2.3', body: '* init' } ],
   title: 'changelog title',
-  description: 'A cool description (optional).\n\n'
-  versions: [{
-    version: 'unreleased',
-    body: '* foo\n\n'
-  }, {
-    version: 'x.y.z',
-    body: '* bar\n\n'
-  }, {
-    version: 'a.b.c',
-    body: '### Changes\n* Update API\n* Fix bug #1\n\n'
-  }, {
-    version: '2.2.3-pre.1',
-    body: '* Update API\n\n'
-  }, {
-    version: '1.0.0-x.7.z.92',
-    body: '* bark bark\n* woof\n* arf\n\n'
-  }, {
-    version: '1.2.3',
-    body: '* init\n\n'
-  }]
-}
+  description: 'A cool description (optional).' }
 ```
 
-Expects a version to be semver compliant, otherwise treats it as a plain string.
+Expects a version to be [semver](http://semver.org/) compliant, otherwise treats it as a plain string.
 
 `CHANGELOG.md` standards are inspired by [keepachangelog.com](http://keepachangelog.com/).
 
