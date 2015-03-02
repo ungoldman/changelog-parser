@@ -23,5 +23,10 @@
   "scripts": {
     "format": "standard-format -w",
     "test": "standard && node test"
+  },
+  "dependencies": {
+    "cheerio": "^0.18.0",
+    "marked": "^0.3.3",
+    "to-markdown": "0.0.3"
   }
 }
