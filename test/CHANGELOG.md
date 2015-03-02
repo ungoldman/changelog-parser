@@ -11,6 +11,7 @@ A cool description (optional).
 ## [a.b.c]
 
 ### Changes
+
 * Update API
 * Fix bug #1
 
