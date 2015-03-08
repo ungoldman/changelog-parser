@@ -10,7 +10,7 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 * add node 0.10 to travis-ci testing environments
 
 ## [1.0.1] - 2015-03-02
-* fix readme example for @[paulcpederson](github.com/paulcpederson/)
+* fix readme example for [paulcpederson](http://github.com/paulcpederson/)
 
 ## 1.0.0 - 2015-03-02
 * init
