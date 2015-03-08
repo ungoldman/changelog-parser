@@ -10,6 +10,7 @@ module.exports = function parse (file, callback) {
 
     // clean up description
     log.description = clean(log.description)
+    if (log.description === '') delete log.description
 
     callback(null, log)
   })
