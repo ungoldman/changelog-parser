@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var parseChangelog = require('..')
-var path = require('path')
 var file = process.argv[2] || 'CHANGELOG.md'
 var help = process.argv[2] === '-h' || process.argv[2] === '--help'
 
