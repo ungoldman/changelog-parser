@@ -1,8 +1,11 @@
 {
   "name": "changelog-parser",
   "description": "Change log parser for node.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Nate Goldman <nate@ngoldman.me>",
+  "bin": {
+    "changelog-parser": "./bin/cli.js"
+  },
   "bugs": {
     "url": "https://github.com/ngoldman/changelog-parser/issues"
   },
@@ -19,7 +22,8 @@
   },
   "homepage": "https://github.com/ngoldman/changelog-parser",
   "keywords": [
-    "changelog"
+    "changelog",
+    "CHANGELOG.md"
   ],
   "license": "ISC",
   "main": "index.js",

@@ -22,6 +22,24 @@ parseChangelog('path/to/CHANGELOG.md', function (err, result) {
 })
 ```
 
+## Command-line interface
+
+There is also a command-line interface available if you install it with `-g`.
+
+```
+npm install -g changelog-parser
+```
+
+This installs a program called `changelog-parser` that you simply pass a `CHANGELOG.md` file.
+
+```
+changelog-parser path/to/CHANGELOG.md
+```
+
+This will print the JSON object representing the change log to the terminal.
+
+Alternately you can run it without arguments and it will look for a `CHANGELOG.md` file in the working directory.
+
 ## Standards
 
 This module assumes your changelog is:
