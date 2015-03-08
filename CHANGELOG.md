@@ -15,5 +15,5 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ## 1.0.0 - 2015-03-02
 * init
 
-[1.1.0]: https://github.com/ngoldman/magnet-link/compare/v1.0.1...v1.1.0
-[1.0.1]: https://github.com/ngoldman/magnet-link/compare/v1.0.0...v1.0.1
+[1.1.0]: https://github.com/ngoldman/changelog-parser/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/ngoldman/changelog-parser/compare/v1.0.0...v1.0.1
