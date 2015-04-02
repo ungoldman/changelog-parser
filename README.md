@@ -68,10 +68,14 @@ A cool description (optional).
 ## 2.2.3-pre.1 - 2013-02-14
 * Update API
 
-## 1.0.0-x.7.z.92 - 2013-02-14
+## 2.0.0-x.7.z.92 - 2013-02-14
 * bark bark
 * woof
 * arf
+
+## v1.3.0
+
+* make it so
 
 ## [1.2.3](link)
 * init
@@ -82,17 +86,33 @@ A cool description (optional).
 Parsing the above example will return the following object:
 
 ```js
-{ versions:
-   [ { version: 'unreleased', body: '* foo' },
-     { version: 'x.y.z', body: '* bar' },
-     { version: 'a.b.c',
-       body: '### Changes\n\n* Update API\n* Fix bug #1' },
-     { version: '2.2.3-pre.1', body: '* Update API' },
-     { version: '1.0.0-x.7.z.92',
-       body: '* bark bark\n* woof\n* arf' },
-     { version: '1.2.3', body: '* init' } ],
+{
   title: 'changelog title',
-  description: 'A cool description (optional).' }
+  description: 'A cool description (optional).',
+  versions: [
+    { version: null,
+      title: 'unreleased',
+      body: '* foo' },
+    { version: 'x.y.z',
+      title: 'x.y.z - YYYY-MM-DD',
+      body: '* bar' },
+    { version: 'a.b.c',
+      title: '[a.b.c]',
+      body: '### Changes\n\n* Update API\n* Fix bug #1' },
+    { version: '2.2.3-pre.1',
+      title: '2.2.3-pre.1 - 2013-02-14',
+      body: '* Update API' },
+    { version: '2.0.0-x.7.z.92',
+      title: '2.0.0-x.7.z.92 - 2013-02-14',
+      body: '* bark bark\n* woof\n* arf' },
+    { version: '1.3.0',
+      title: 'v1.3.0',
+      body: '* make it so' },
+    { version: '1.2.3',
+      title: '[1.2.3](link)',
+      body: '* init' }
+  ]
+}
 ```
 
 Expects a version to be [semver](http://semver.org/) compliant, otherwise treats it as a plain string.
