@@ -1,5 +1,5 @@
 var lineReader = require('line-reader')
-var semver = /\[?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
+var semver = /\[?v?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
 var log = { versions: [] }
 var current
 
@@ -28,12 +28,13 @@ function handleLine (line) {
 
   // new version found!
   if (line.match(/^## ?[^#]/)) {
-    if (current && current.version) pushCurrent()
+    if (current && current.title) pushCurrent()
 
     current = versionFactory()
 
     if (semver.exec(line)) current.version = semver.exec(line)[1]
-    else current.version = line.substring(2).trim()
+
+    current.title = line.substring(2).trim()
 
     return
   }
@@ -49,6 +50,7 @@ function handleLine (line) {
 function versionFactory () {
   return {
     version: null,
+    title: null,
     body: ''
   }
 }
