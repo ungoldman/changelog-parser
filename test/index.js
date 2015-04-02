@@ -1,11 +1,40 @@
 var parseChangelog = require('..')
+var test = require('tape')
+var expected = {
+  title: 'changelog title',
+  description: 'A cool description (optional).',
+  versions: [
+    { version: null,
+      title: 'unreleased',
+      body: '* foo' },
+    { version: 'x.y.z',
+      title: 'x.y.z - YYYY-MM-DD',
+      body: '* bar' },
+    { version: 'a.b.c',
+      title: '[a.b.c]',
+      body: '### Changes\n\n* Update API\n* Fix bug #1' },
+    { version: '2.2.3-pre.1',
+      title: '2.2.3-pre.1 - 2013-02-14',
+      body: '* Update API' },
+    { version: '2.0.0-x.7.z.92',
+      title: '2.0.0-x.7.z.92 - 2013-02-14',
+      body: '* bark bark\n* woof\n* arf' },
+    { version: '1.3.0',
+      title: 'v1.3.0',
+      body: '* make it so' },
+    { version: '1.2.3',
+      title: '[1.2.3](link)',
+      body: '* init' }
+  ]
+}
 
-parseChangelog(__dirname + '/CHANGELOG.md', function (err, result) {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-  }
+test('meet expectations', function (t) {
+  t.plan(1)
 
-  console.log(result)
-  process.exit(0)
+  parseChangelog(__dirname + '/CHANGELOG.md', function (err, result) {
+    if (err) throw err
+
+    t.deepEqual(result, expected)
+    t.end()
+  })
 })

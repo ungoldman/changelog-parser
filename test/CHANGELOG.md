@@ -18,10 +18,14 @@ A cool description (optional).
 ## 2.2.3-pre.1 - 2013-02-14
 * Update API
 
-## 1.0.0-x.7.z.92 - 2013-02-14
+## 2.0.0-x.7.z.92 - 2013-02-14
 * bark bark
 * woof
 * arf
+
+## v1.3.0
+
+* make it so
 
 ## [1.2.3](link)
 * init
