@@ -115,7 +115,7 @@ Parsing the above example will return the following object:
 }
 ```
 
-Expects a version to be [semver](http://semver.org/) compliant, otherwise treats it as a plain string.
+Expects versions to be [semver](http://semver.org/) compliant, otherwise sets `version` to null.
 
 `CHANGELOG.md` standards are inspired by [keepachangelog.com](http://keepachangelog.com/).
 
