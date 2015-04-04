@@ -24,7 +24,8 @@
   "homepage": "https://github.com/ngoldman/changelog-parser",
   "keywords": [
     "changelog",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "parser"
   ],
   "license": "ISC",
   "main": "index.js",
