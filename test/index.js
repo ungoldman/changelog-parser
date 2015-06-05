@@ -1,5 +1,7 @@
 var parseChangelog = require('..')
 var test = require('tape')
+var endOfLine = require('os').EOL
+
 var expected = {
   title: 'changelog title',
   description: 'A cool description (optional).',
@@ -12,13 +14,13 @@ var expected = {
       body: '* bar' },
     { version: 'a.b.c',
       title: '[a.b.c]',
-      body: '### Changes\n\n* Update API\n* Fix bug #1' },
+      body: '### Changes' + endOfLine + endOfLine + '* Update API' + endOfLine + '* Fix bug #1' },
     { version: '2.2.3-pre.1',
       title: '2.2.3-pre.1 - 2013-02-14',
       body: '* Update API' },
     { version: '2.0.0-x.7.z.92',
       title: '2.0.0-x.7.z.92 - 2013-02-14',
-      body: '* bark bark\n* woof\n* arf' },
+      body: '* bark bark' + endOfLine + '* woof' + endOfLine + '* arf' },
     { version: '1.3.0',
       title: 'v1.3.0',
       body: '* make it so' },
