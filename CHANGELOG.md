@@ -32,7 +32,7 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ## 1.0.0 - 2015-03-02
 * init
 
-[2.0.0]: https://github.com/ngoldman/changelog-parser/compare/v2.0.0...v2.0.1
+[2.0.1]: https://github.com/ngoldman/changelog-parser/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/ngoldman/changelog-parser/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/ngoldman/changelog-parser/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/ngoldman/changelog-parser/compare/v1.0.0...v1.0.1
