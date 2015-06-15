@@ -6,6 +6,7 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ## [Unreleased](https://github.com/ngoldman/changelog-parser/compare/v2.0.1...HEAD)
 * readme updates
 * change log fix
+* add keywords to package.json
 
 ## [2.0.1] - 2015-06-07
 
