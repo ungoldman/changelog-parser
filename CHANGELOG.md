@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 This change log adheres to standards from [Keep a CHANGELOG](http://keepachangelog.com).
 
+## [Unreleased](https://github.com/ngoldman/changelog-parser/compare/v2.0.1...HEAD)
+* readme updates
+* change log fix
+
 ## [2.0.1] - 2015-06-07
 
 ### Changes
