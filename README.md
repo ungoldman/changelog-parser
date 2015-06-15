@@ -1,15 +1,22 @@
 # changelog-parser
 
-[![](https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square)](https://www.npmjs.com/package/changelog-parser)
-[![](https://img.shields.io/travis/ngoldman/changelog-parser.svg?style=flat-square)](https://travis-ci.org/ngoldman/changelog-parser)
+> Change log parser for node.
 
-Change log parser for node.
+[![npm][npm-img]][npm-url]
+[![travis][travis-img]][travis-url]
 
-## Usage
+[npm-img]: https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square
+[npm-url]: https://www.npmjs.com/package/changelog-parser
+[travis-img]: https://img.shields.io/travis/ngoldman/changelog-parser.svg?style=flat-square
+[travis-url]: https://travis-ci.org/ngoldman/changelog-parser
+
+## Install
 
 ```
 npm install changelog-parser
 ```
+
+## Usage
 
 ```js
 var parseChangelog = require('changelog-parser')
@@ -22,7 +29,7 @@ parseChangelog('path/to/CHANGELOG.md', function (err, result) {
 })
 ```
 
-## Command-line interface
+### Command-line interface
 
 There is also a command-line interface available if you install it with `-g`.
 
@@ -42,10 +49,7 @@ Alternately you can run it without arguments and it will look for a `CHANGELOG.m
 
 ## Standards
 
-This module assumes your changelog is:
-
-1. A markdown file
-1. Structured roughly like so:
+This module assumes your change log is a [markdown](http://daringfireball.net/projects/markdown/syntax) file structured roughly like so:
 
 ```md
 # changelog title
@@ -121,11 +125,7 @@ Expects versions to be [semver](http://semver.org/) compliant, otherwise sets `v
 
 ## Contributing
 
-`changelog-parser` is an **OPEN Open Source Project**. This means that:
-
-> Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
-
-See the [CONTRIBUTING.md](CONTRIBUTING.md) file for more details.
+Contributions welcome! Please read the [contributing guidelines](CONTRIBUTING.md) first.
 
 ## License
 
