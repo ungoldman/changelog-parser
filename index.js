@@ -1,11 +1,11 @@
-var endOfLine = require('os').EOL
+var EOL = require('os').EOL
 var lineReader = require('line-reader')
 var semver = /\[?v?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
 var log = { versions: [] }
 var current
 
 function parseChangelog (file, callback) {
-  lineReader.eachLine(file, handleLine, endOfLine).then(function () {
+  lineReader.eachLine(file, handleLine, EOL).then(function () {
     // push last version into log
     pushCurrent()
 
@@ -42,9 +42,9 @@ function handleLine (line) {
 
   // deal with body or description content
   if (current) {
-    current.body += line + endOfLine
+    current.body += line + EOL
   } else {
-    log.description = (log.description || '') + line + endOfLine
+    log.description = (log.description || '') + line + EOL
   }
 }
 
@@ -67,9 +67,9 @@ function clean (str) {
   // trim
   str = str.trim()
   // remove leading newlines
-  str = str.replace(new RegExp('[' + endOfLine + ']*'), '')
+  str = str.replace(new RegExp('[' + EOL + ']*'), '')
   // remove trailing newlines
-  str = str.replace(new RegExp('[' + endOfLine + ']*$'), '')
+  str = str.replace(new RegExp('[' + EOL + ']*$'), '')
 
   return str
 }
