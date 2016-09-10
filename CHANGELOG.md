@@ -1,10 +1,16 @@
 # Change Log
-All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
-This change log adheres to standards from [Keep a CHANGELOG](http://keepachangelog.com).
 
-## [Unreleased](https://github.com/ungoldman/changelog-parser/compare/v2.0.2...HEAD)
-* bump dependencies
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [Unreleased](https://github.com/ungoldman/changelog-parser/compare/v2.0.3...HEAD)
+
+## [2.0.3] - 2016-09-09
+* bump dev dependencies
+* update repo URL
+* update maintainer email
 
 ## [2.0.2] - 2015-06-15
 * readme updates
@@ -40,6 +46,7 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ## 1.0.0 - 2015-03-02
 * init
 
+[2.0.3]: https://github.com/ungoldman/changelog-parser/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/ungoldman/changelog-parser/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/ungoldman/changelog-parser/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/ungoldman/changelog-parser/compare/v1.1.0...v2.0.0
