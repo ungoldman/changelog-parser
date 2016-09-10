@@ -2,7 +2,7 @@
   "name": "changelog-parser",
   "description": "Change log parser for node.",
   "version": "2.0.2",
-  "author": "Nate Goldman <nate@ngoldman.me>",
+  "author": "Nate Goldman <ungoldman@gmail.com>",
   "bin": {
     "changelog-parser": "./bin/cli.js"
   },
@@ -10,7 +10,7 @@
     "url": "https://github.com/ngoldman/changelog-parser/issues"
   },
   "contributors": [
-    "Nate Goldman <nate@ngoldman.me>",
+    "Nate Goldman <ungoldman@gmail.com>",
     "Rachel Nehmer <kneemer@gmail.com>",
     "Viktor Havrylin <fer0x.feo@gmail.com>"
   ],
