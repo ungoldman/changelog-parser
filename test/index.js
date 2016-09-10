@@ -1,6 +1,7 @@
 var parseChangelog = require('..')
 var test = require('tape')
 var EOL = require('os').EOL
+var path = require('path')
 
 var expected = {
   title: 'changelog title',
@@ -33,7 +34,7 @@ var expected = {
 test('meet expectations', function (t) {
   t.plan(1)
 
-  parseChangelog(__dirname + '/CHANGELOG.md', function (err, result) {
+  parseChangelog(path.join(__dirname, 'CHANGELOG.md'), function (err, result) {
     if (err) throw err
 
     t.deepEqual(result, expected)
