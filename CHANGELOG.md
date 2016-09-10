@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 This change log adheres to standards from [Keep a CHANGELOG](http://keepachangelog.com).
 
-## [Unreleased](https://github.com/ngoldman/changelog-parser/compare/v2.0.2...HEAD)
+## [Unreleased](https://github.com/ungoldman/changelog-parser/compare/v2.0.2...HEAD)
 * bump dependencies
 
 ## [2.0.2] - 2015-06-15
@@ -14,7 +14,7 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ## [2.0.1] - 2015-06-07
 
 ### Changes
-* use `os` module to support cross-platform EOL parsing ([#4](https://github.com/ngoldman/changelog-parser/pull/4))
+* use `os` module to support cross-platform EOL parsing ([#4](https://github.com/ungoldman/changelog-parser/pull/4))
 
 ## [2.0.0] - 2015-04-02
 
@@ -22,7 +22,7 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 * `version` key of version object is now `null` unless semver found
 
 ### Changes
-* parse out `v` prefix for version numbers ([ngoldman/gh-release#23](https://github.com/ngoldman/gh-release/issues/23))
+* parse out `v` prefix for version numbers ([ngoldman/gh-release#23](https://github.com/ungoldman/gh-release/issues/23))
 
 ### Additions
 * add `title` key to version object
@@ -40,8 +40,8 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ## 1.0.0 - 2015-03-02
 * init
 
-[2.0.2]: https://github.com/ngoldman/changelog-parser/compare/v2.0.1...v2.0.2
-[2.0.1]: https://github.com/ngoldman/changelog-parser/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/ngoldman/changelog-parser/compare/v1.1.0...v2.0.0
-[1.1.0]: https://github.com/ngoldman/changelog-parser/compare/v1.0.1...v1.1.0
-[1.0.1]: https://github.com/ngoldman/changelog-parser/compare/v1.0.0...v1.0.1
+[2.0.2]: https://github.com/ungoldman/changelog-parser/compare/v2.0.1...v2.0.2
+[2.0.1]: https://github.com/ungoldman/changelog-parser/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/ungoldman/changelog-parser/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/ungoldman/changelog-parser/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/ungoldman/changelog-parser/compare/v1.0.0...v1.0.1

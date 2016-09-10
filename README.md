@@ -7,8 +7,8 @@
 
 [npm-img]: https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/changelog-parser
-[travis-img]: https://img.shields.io/travis/ngoldman/changelog-parser.svg?style=flat-square
-[travis-url]: https://travis-ci.org/ngoldman/changelog-parser
+[travis-img]: https://img.shields.io/travis/ungoldman/changelog-parser.svg?style=flat-square
+[travis-url]: https://travis-ci.org/ungoldman/changelog-parser
 
 ## Install
 
