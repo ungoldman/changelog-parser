@@ -1,10 +1,13 @@
 var EOL = require('os').EOL
 var lineReader = require('line-reader')
 var semver = /\[?v?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
-var log = { versions: [] }
+var log
 var current
 
 function parseChangelog (file, callback) {
+  log = { versions: [] }
+  current = {}
+  
   lineReader.eachLine(file, handleLine, EOL).then(function () {
     // push last version into log
     pushCurrent()
