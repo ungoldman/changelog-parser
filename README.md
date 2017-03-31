@@ -4,8 +4,8 @@ Change log parser for node.
 
 [npm-img]: https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/changelog-parser
-[travis-img]: https://img.shields.io/travis/ungoldman/changelog-parser.svg?style=flat-square
-[travis-url]: https://travis-ci.org/ungoldman/changelog-parser
+[travis-img]: https://img.shields.io/travis/hypermodules/changelog-parser.svg?style=flat-square
+[travis-url]: https://travis-ci.org/hypermodules/changelog-parser
 [standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [standard-url]: http://standardjs.com/
 [downloads-img]: https://img.shields.io/npm/dm/changelog-parser.svg?style=flat-square
@@ -126,6 +126,11 @@ Expects versions to be [semver](http://semver.org/) compliant, otherwise sets `v
 ## Contributing
 
 Contributions welcome! Please read the [contributing guidelines](CONTRIBUTING.md) first.
+
+## See Also
+
+- [changelog-init](https://github.com/bcomnes/changelog-init)
+- [gh-release](https://github.com/hypermodules/gh-release)
 
 ## License
 
