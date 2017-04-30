@@ -15,10 +15,10 @@
     "Viktor Havrylin <fer0x.feo@gmail.com>"
   ],
   "dependencies": {
-    "line-reader": "^0.2.4"
+    "line-reader": "^0.4.0"
   },
   "devDependencies": {
-    "standard": "^8.0.0",
+    "standard": "^10.0.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.0"
   },
