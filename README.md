@@ -1,5 +1,7 @@
 # changelog-parser [![npm][npm-img]][npm-url] [![travis][travis-img]][travis-url] [![standard][standard-image]][standard-url] [![downloads][downloads-img]][npm-url]
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/hypermodules/changelog-parser.svg)](https://greenkeeper.io/)
+
 Change log parser for node.
 
 [npm-img]: https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square
