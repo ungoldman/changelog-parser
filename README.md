@@ -1,4 +1,6 @@
-# changelog-parser [![npm][npm-img]][npm-url] [![travis][travis-img]][travis-url] [![standard][standard-image]][standard-url] [![downloads][downloads-img]][npm-url]
+# changelog-parser
+
+[![npm][npm-img]][npm-url] [![travis][travis-img]][travis-url] [![standard][standard-image]][standard-url] [![downloads][downloads-img]][npm-url]
 
 Change log parser for node.
 
