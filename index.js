@@ -1,6 +1,6 @@
 var EOL = require('os').EOL
 var lineReader = require('line-reader')
-var semver = /\[?v?([\w\d\.-]+\.[\w\d\.-]+[a-zA-Z0-9])\]?/
+var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
 var log
 var current
 
@@ -22,7 +22,7 @@ function parseChangelog (file, callback) {
 
 function handleLine (line) {
   // skip line if it's a link label
-  if (line.match(/^\[[^\[\]]*\] *?:/)) return
+  if (line.match(/^\[[^[\]]*\] *?:/)) return
 
   // set title if it's there
   if (!log.title && line.match(/^# ?[^#]/)) {
