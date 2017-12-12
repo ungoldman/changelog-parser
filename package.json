@@ -18,7 +18,7 @@
     "line-reader": "^0.2.4"
   },
   "devDependencies": {
-    "gh-release": "^2.2.1",
+    "gh-release": "^3.1.1",
     "standard": "^10.0.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.0"
