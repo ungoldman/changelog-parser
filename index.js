@@ -1,6 +1,7 @@
 var EOL = require('os').EOL
 var lineReader = require('line-reader')
 var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
+var date = /.*([\d]{4}-[\d]{2}-[\d]{2}).*/
 var log
 var current
 
@@ -40,6 +41,8 @@ function handleLine (line) {
 
     current.title = line.substring(2).trim()
 
+    if (current.title && date.exec(current.title)) current.date = date.exec(current.title)[1]
+
     return
   }
 
@@ -55,6 +58,7 @@ function versionFactory () {
   return {
     version: null,
     title: null,
+    date: null,
     body: ''
   }
 }
