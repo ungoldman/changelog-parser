@@ -12,7 +12,8 @@
   "contributors": [
     "Nate Goldman <ungoldman@gmail.com>",
     "Rachel Nehmer <kneemer@gmail.com>",
-    "Viktor Havrylin <fer0x.feo@gmail.com>"
+    "Viktor Havrylin <fer0x.feo@gmail.com>",
+    "J R Mykolyn <jrmykolyn@gmail.com>"
   ],
   "dependencies": {
     "line-reader": "^0.2.4"
