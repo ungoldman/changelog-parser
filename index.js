@@ -6,18 +6,32 @@ var log
 var current
 
 function parseChangelog (file, callback) {
+  // return a Promise if invoked without a `callback`
+  if (!callback || typeof callback !== 'function') {
+    return doParse(file)
+  }
+
+  // otherwise, parse log and invoke callback
+  doParse(file).then(function (log) {
+    callback(null, log)
+  })
+}
+
+function doParse (file) {
   log = { versions: [] }
   current = null
 
-  lineReader.eachLine(file, handleLine, EOL).then(function () {
-    // push last version into log
-    pushCurrent()
+  return new Promise(function (resolve, reject) {
+    lineReader.eachLine(file, handleLine, EOL).then(function () {
+      // push last version into log
+      pushCurrent()
 
-    // clean up description
-    log.description = clean(log.description)
-    if (log.description === '') delete log.description
+      // clean up description
+      log.description = clean(log.description)
+      if (log.description === '') delete log.description
 
-    callback(null, log)
+      resolve(log)
+    })
   })
 }
 
