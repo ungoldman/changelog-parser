@@ -48,3 +48,21 @@ test('meet expectations', function (t) {
     t.end()
   })
 })
+
+test('returns a Promise when invoked without a valid `callback`', function (t) {
+  t.plan(2)
+
+  var result = parseChangelog(path.join(__dirname, 'CHANGELOG.md'))
+
+  t.true(typeof result === 'object')
+  t.true(result instanceof Promise)
+})
+
+test('resolved Promise contains a "CHANGELOG" object', function (t) {
+  t.plan(1)
+
+  parseChangelog(path.join(__dirname, 'CHANGELOG.md')).then(function (result) {
+    t.deepEqual(result, expected)
+    t.end()
+  })
+})
