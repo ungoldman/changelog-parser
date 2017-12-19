@@ -16,7 +16,6 @@ function parseChangelog (file, callback) {
 }
 
 function doParse (file) {
-
   var data = {
     log: { versions: [] },
     current: null
