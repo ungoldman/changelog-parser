@@ -23,12 +23,25 @@ npm install changelog-parser
 ```js
 var parseChangelog = require('changelog-parser')
 
+// CALLBACK
+// If provided with a callback, `parseChangelog` will invoke the function with the parsed changelog.
 parseChangelog('path/to/CHANGELOG.md', function (err, result) {
   if (err) throw err
 
   // changelog object
   console.log(result)
 })
+
+// Promise
+// If no callback is provided, `parseChangelog` will return a Promise.
+parseChangelog('path/to/CHANGELOG.md')
+    .then(function(result) {
+        // changelog object
+        console.log(result)
+    })
+    .catch(() {
+        // Whoops, something went wrong!
+    })
 ```
 
 ### Command-line interface

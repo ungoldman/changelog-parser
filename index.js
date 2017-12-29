@@ -2,22 +2,39 @@ var EOL = require('os').EOL
 var lineReader = require('line-reader')
 var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
 var date = /.*([\d]{4}-[\d]{2}-[\d]{2}).*/
-var log
-var current
 
 function parseChangelog (file, callback) {
-  log = { versions: [] }
-  current = null
+  // return a Promise if invoked without a `callback`
+  if (!callback || typeof callback !== 'function') {
+    return doParse(file)
+  }
 
-  lineReader.eachLine(file, handleLine, EOL).then(function () {
-    // push last version into log
-    pushCurrent()
-
-    // clean up description
-    log.description = clean(log.description)
-    if (log.description === '') delete log.description
-
+  // otherwise, parse log and invoke callback
+  doParse(file).then(function (log) {
     callback(null, log)
+  })
+}
+
+function doParse (file) {
+  var data = {
+    log: { versions: [] },
+    current: null
+  }
+
+  // allow `handleLine` to mutate log/current data as `this`.
+  var cb = handleLine.bind(data)
+
+  return new Promise(function (resolve, reject) {
+    lineReader.eachLine(file, cb, EOL).then(function () {
+      // push last version into log
+      pushCurrent(data)
+
+      // clean up description
+      data.log.description = clean(data.log.description)
+      if (data.log.description === '') delete data.log.description
+
+      resolve(data.log)
+    })
   })
 }
 
@@ -26,31 +43,31 @@ function handleLine (line) {
   if (line.match(/^\[[^[\]]*\] *?:/)) return
 
   // set title if it's there
-  if (!log.title && line.match(/^# ?[^#]/)) {
-    log.title = line.substring(1).trim()
+  if (!this.log.title && line.match(/^# ?[^#]/)) {
+    this.log.title = line.substring(1).trim()
     return
   }
 
   // new version found!
   if (line.match(/^## ?[^#]/)) {
-    if (current && current.title) pushCurrent()
+    if (this.current && this.current.title) pushCurrent(this)
 
-    current = versionFactory()
+    this.current = versionFactory()
 
-    if (semver.exec(line)) current.version = semver.exec(line)[1]
+    if (semver.exec(line)) this.current.version = semver.exec(line)[1]
 
-    current.title = line.substring(2).trim()
+    this.current.title = line.substring(2).trim()
 
-    if (current.title && date.exec(current.title)) current.date = date.exec(current.title)[1]
+    if (this.current.title && date.exec(this.current.title)) this.current.date = date.exec(this.current.title)[1]
 
     return
   }
 
   // deal with body or description content
-  if (current) {
-    current.body += line + EOL
+  if (this.current) {
+    this.current.body += line + EOL
   } else {
-    log.description = (log.description || '') + line + EOL
+    this.log.description = (this.log.description || '') + line + EOL
   }
 }
 
@@ -63,9 +80,9 @@ function versionFactory () {
   }
 }
 
-function pushCurrent () {
-  current.body = clean(current.body)
-  log.versions.push(current)
+function pushCurrent (data) {
+  data.current.body = clean(data.current.body)
+  data.log.versions.push(data.current)
 }
 
 function clean (str) {
