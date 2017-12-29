@@ -5,15 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.0](https://github.com/ungoldman/changelog-parser/compare/v2.1.0...v2.2.0) - 2017-12-29
+
+### Features
+
+- add promise support (#18) (#19) - thanks @jrmykolyn
+
 ## [2.1.0](https://github.com/ungoldman/changelog-parser/compare/v2.0.5...v2.1.0) - 2017-12-12
 
 ### Features
 
-- add date to version objects; update tests. (#6) (#15)
+- add date to version objects; update tests. (#6) (#15) - thanks @jrmykolyn
 
 ### Chores
 
-- chore(pkg): add release script
+- add release script
 
 ## [2.0.5](https://github.com/ungoldman/changelog-parser/compare/v2.0.4...v2.0.5) - 2017-06-28
 
