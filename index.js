@@ -1,7 +1,12 @@
 var EOL = require('os').EOL
 var lineReader = require('line-reader')
+var removeMarkdown = require('remove-markdown')
+
+// patterns
 var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
 var date = /.*([\d]{4}-[\d]{2}-[\d]{2}).*/
+var subhead = /^###/
+var listitem = /^[*-]/
 
 function parseChangelog (file, callback) {
   // return a Promise if invoked without a `callback`
@@ -66,6 +71,29 @@ function handleLine (line) {
   // deal with body or description content
   if (this.current) {
     this.current.body += line + EOL
+
+    // handle case where current line is a 'subhead':
+    // - 'handleize' subhead.
+    // - add subhead to 'parsed' data if not already present.
+    if (subhead.exec(line)) {
+      let key = line.replace('###', '').toLowerCase().trim()
+
+      if (!this.current.parsed[key]) {
+        this.current.parsed[key] = []
+        this.current._private.activeSubhead = key
+      }
+    }
+
+    // handle case where current line is a 'list item':
+    if (listitem.exec(line)) {
+      // add line to 'catch all' array
+      this.current.parsed._.push(removeMarkdown(line))
+
+      // add line to 'active subhead' if applicable (eg. 'Added', 'Changed', etc.)
+      if (this.current._private.activeSubhead) {
+        this.current.parsed[this.current._private.activeSubhead].push(removeMarkdown(line))
+      }
+    }
   } else {
     this.log.description = (this.log.description || '') + line + EOL
   }
@@ -76,11 +104,20 @@ function versionFactory () {
     version: null,
     title: null,
     date: null,
-    body: ''
+    body: '',
+    parsed: {
+      _: []
+    },
+    _private: {
+      activeSubhead: null
+    }
   }
 }
 
 function pushCurrent (data) {
+  // remove private properties
+  delete data.current._private
+
   data.current.body = clean(data.current.body)
   data.log.versions.push(data.current)
 }
