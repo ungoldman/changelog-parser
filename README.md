@@ -122,36 +122,90 @@ Parsing the above example will return the following object:
     { version: null,
       title: 'unreleased',
       date: null,
-      body: '* foo' },
+      body: '* foo',
+      parsed: {
+        _: [
+          'foo'
+        ]
+      }
+    },
     { version: 'x.y.z',
       title: 'x.y.z - YYYY-MM-DD',
       date: null,
-      body: '* bar' },
+      body: '* bar',
+      parsed: {
+        _: [
+          'bar'
+        ]
+      }
+    },
     { version: 'a.b.c',
       title: '[a.b.c]',
       date: null,
-      body: '### Changes\n\n* Update API\n* Fix bug #1' },
+      body: '### Changes\n\n* Update API\n* Fix bug #1',
+      parsed: {
+        _: [
+          'Update API',
+          'Fix bug #1'
+        ],
+        Changes: [
+          'Update API',
+          'Fix bug #1'
+        ]
+      }
+    },
     { version: '2.2.3-pre.1',
       title: '2.2.3-pre.1 - 2013-02-14',
       date: '2013-02-14',
-      body: '* Update API' },
+      body: '* Update API',
+      parsed: {
+        _: [
+          'Update API'
+        ]
+      }
+    },
     { version: '2.0.0-x.7.z.92',
       title: '2.0.0-x.7.z.92 - 2013-02-14',
       date: '2013-02-14',
-      body: '* bark bark\n* woof\n* arf' },
+      body: '* bark bark\n* woof\n* arf',
+      parsed: {
+        _: [
+          'bark bark',
+          'woof',
+          'arf'
+        ]
+      }
+    },
     { version: '1.3.0',
       title: 'v1.3.0',
       date: null,
-      body: '* make it so' },
+      body: '* make it so',
+      parsed: {
+        _: [
+          'make it so'
+        ]
+      }
+    },
     { version: '1.2.3',
       title: '[1.2.3](link)',
       date: null,
-      body: '* init' }
+      body: '* init',
+      parsed: {
+        _: [
+          'init'
+        ]
+      }
+    }
   ]
 }
 ```
 
 Expects versions to be [semver](http://semver.org/) compliant, otherwise sets `version` to null.
+
+Each entry is available as an object in the `versions` array. The body of a given entry can be accessed using the following properties:
+
+- `body` - A string containing all of the updates/changes/etc. for the current entry. This property includes both plain text and markdown.
+- `parsed` - An object which points to one or more arrays of data for the current entry. All data for the current entry is present in the array at key `_` (eg. `parsed._`). If the entry contains subheadings (eg. `### Added`, `### Changed`), then any items underneath each subheading will be present in an array at the corresponding key (eg. `parsed.Added`, `parsed.Changed`). Each array contains plain text.
 
 `CHANGELOG.md` standards are inspired by [keepachangelog.com](http://keepachangelog.com/).
 

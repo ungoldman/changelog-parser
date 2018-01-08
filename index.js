@@ -76,7 +76,7 @@ function handleLine (line) {
     // - 'handleize' subhead.
     // - add subhead to 'parsed' data if not already present.
     if (subhead.exec(line)) {
-      var key = line.replace('###', '').toLowerCase().trim()
+      var key = line.replace('###', '').trim()
 
       if (!this.current.parsed[key]) {
         this.current.parsed[key] = []

@@ -36,7 +36,7 @@ var expected = {
           'Update API',
           'Fix bug #1'
         ],
-        changes: [
+        Changes: [
           'Update API',
           'Fix bug #1'
         ]
@@ -52,7 +52,7 @@ var expected = {
           'Added another item.',
           'Update API'
         ],
-        added: [
+        Added: [
           'Added an item.',
           'Added another item.',
           'Update API'
