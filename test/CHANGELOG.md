@@ -16,6 +16,11 @@ A cool description (optional).
 * Fix bug #1
 
 ## 2.2.3-pre.1 - 2013-02-14
+
+### Added
+- Added an item.
+* Added another item.
+
 * Update API
 
 ## 2.0.0-x.7.z.92 - 2013-02-14

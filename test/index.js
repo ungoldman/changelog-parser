@@ -10,31 +10,87 @@ var expected = {
     { version: null,
       title: 'unreleased',
       'date': null,
-      body: '* foo' },
+      body: '* foo',
+      parsed: {
+        _: [
+          'foo'
+        ]
+      }
+    },
     { version: 'x.y.z',
       title: 'x.y.z - YYYY-MM-DD',
       'date': null,
-      body: '* bar' },
+      body: '* bar',
+      parsed: {
+        _: [
+          'bar'
+        ]
+      }
+    },
     { version: 'a.b.c',
       title: '[a.b.c]',
       'date': null,
-      body: '### Changes' + EOL + EOL + '* Update API' + EOL + '* Fix bug #1' },
+      body: '### Changes' + EOL + EOL + '* Update API' + EOL + '* Fix bug #1',
+      parsed: {
+        _: [
+          'Update API',
+          'Fix bug #1'
+        ],
+        Changes: [
+          'Update API',
+          'Fix bug #1'
+        ]
+      }
+    },
     { version: '2.2.3-pre.1',
       title: '2.2.3-pre.1 - 2013-02-14',
       'date': '2013-02-14',
-      body: '* Update API' },
+      body: '### Added' + EOL + '- Added an item.' + EOL + '* Added another item.' + EOL + EOL + '* Update API',
+      parsed: {
+        _: [
+          'Added an item.',
+          'Added another item.',
+          'Update API'
+        ],
+        Added: [
+          'Added an item.',
+          'Added another item.',
+          'Update API'
+        ]
+      }
+    },
     { version: '2.0.0-x.7.z.92',
       title: '2.0.0-x.7.z.92 - 2013-02-14',
       'date': '2013-02-14',
-      body: '* bark bark' + EOL + '* woof' + EOL + '* arf' },
+      body: '* bark bark' + EOL + '* woof' + EOL + '* arf',
+      parsed: {
+        _: [
+          'bark bark',
+          'woof',
+          'arf'
+        ]
+      }
+    },
     { version: '1.3.0',
       title: 'v1.3.0',
       'date': null,
-      body: '* make it so' },
+      body: '* make it so',
+      parsed: {
+        _: [
+          'make it so'
+        ]
+      }
+    },
     { version: '1.2.3',
       title: '[1.2.3](link)',
       'date': null,
-      body: '* init' }
+      body: '* init',
+      parsed: {
+        _: [
+          'init'
+        ]
+      }
+    }
   ]
 }
 
