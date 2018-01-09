@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0](https://github.com/ungoldman/changelog-parser/compare/v2.2.0...v2.3.0) - 2018-01-09
+
+### Features
+
+- add support for parsed body (#20) (#21) - thanks @jrmykolyn
+
 ## [2.2.0](https://github.com/ungoldman/changelog-parser/compare/v2.1.0...v2.2.0) - 2017-12-29
 
 ### Features
