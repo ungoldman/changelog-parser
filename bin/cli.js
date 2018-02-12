@@ -15,5 +15,5 @@ parseChangelog(file, function (err, result) {
     process.exit(1)
   }
 
-  console.log(result)
+  console.log(JSON.stringify(result))
 })
