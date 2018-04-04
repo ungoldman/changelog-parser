@@ -32,7 +32,9 @@ function doParse (file) {
   return new Promise(function (resolve, reject) {
     lineReader.eachLine(file, cb, EOL).then(function () {
       // push last version into log
-      pushCurrent(data)
+      if (data.current) {
+        pushCurrent(data)
+      }
 
       // clean up description
       data.log.description = clean(data.log.description)
