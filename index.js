@@ -4,7 +4,7 @@ var removeMarkdown = require('remove-markdown')
 
 // patterns
 var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
-var date = /.*[ ](\d\d?\d?\d?[-\/.]\d{2}[-\/.]\d{2}\d?\d?).*/
+var date = /.*[ ](\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?).*/
 var subhead = /^###/
 var listitem = /^[*-]/
 
