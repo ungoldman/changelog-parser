@@ -84,7 +84,7 @@ A cool description (optional).
 ## unreleased
 * foo
 
-## x.y.z - YYYY-MM-DD
+## x.y.z - YYYY-MM-DD (or DD.MM.YYYY)
 * bar
 
 ## [a.b.c]
