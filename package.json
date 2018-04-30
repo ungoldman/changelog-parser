@@ -1,7 +1,7 @@
 {
   "name": "changelog-parser",
   "description": "Change log parser for node.",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "author": "Nate Goldman <ungoldman@gmail.com>",
   "bin": {
     "changelog-parser": "./bin/cli.js"
@@ -13,7 +13,8 @@
     "Nate Goldman <ungoldman@gmail.com>",
     "Rachel Nehmer <kneemer@gmail.com>",
     "Viktor Havrylin <fer0x.feo@gmail.com>",
-    "J R Mykolyn <jrmykolyn@gmail.com>"
+    "J R Mykolyn <jrmykolyn@gmail.com>",
+    "Bogdan Plieshka <bogdanplieshka@gmail.com>"
   ],
   "dependencies": {
     "line-reader": "^0.2.4",
