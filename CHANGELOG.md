@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.1](https://github.com/ungoldman/changelog-parser/compare/v2.5.0...v2.5.1) - 2018-12-05
+
+### Fixes
+
+- Protect against no current value (#24) - thanks @sabrehagen
+
 ## [2.5.0](https://github.com/ungoldman/changelog-parser/compare/v2.4.0...v2.5.0) - 2018-05-30
 
 ### Features
