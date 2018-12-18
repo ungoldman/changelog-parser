@@ -15,6 +15,12 @@ A cool description (optional).
 * Update API
 * Fix bug #1
 
+# 2.3.0 - 2018-12-18
+
+### Added
+
+- Some changelog generators such as [standard-version](https://github.com/conventional-changelog/standard-version) would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.
+
 ## 2.2.3-pre.1 - 2013-02-14
 
 ### Added

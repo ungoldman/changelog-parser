@@ -42,6 +42,19 @@ var expected = {
         ]
       }
     },
+    { version: '2.3.0',
+      title: '2.3.0 - 2018-12-18',
+      'date': '2018-12-18',
+      body: '### Added' + EOL + EOL + '- Some changelog generators such as [standard-version](https://github.com/conventional-changelog/standard-version) would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.',
+      parsed: {
+        _: [
+          'Some changelog generators such as standard-version would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.'
+        ],
+        Added: [
+          'Some changelog generators such as standard-version would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.'
+        ]
+      }
+    },
     { version: '2.2.3-pre.1',
       title: '2.2.3-pre.1 - 2013-02-14',
       'date': '2013-02-14',

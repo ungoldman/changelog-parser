@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased Changes
+
+### Features
+
+- allow version headers in CHANGELOG to use either H1 (#) or H2 (##) headers (#14) - @eladb
+
 ## [2.5.1](https://github.com/ungoldman/changelog-parser/compare/v2.5.0...v2.5.1) - 2018-12-05
 
 ### Fixes

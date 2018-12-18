@@ -56,7 +56,7 @@ function handleLine (line) {
   }
 
   // new version found!
-  if (line.match(/^## ?[^#]/)) {
+  if (line.match(/^##? ?[^#]/)) {
     if (this.current && this.current.title) pushCurrent(this)
 
     this.current = versionFactory()
