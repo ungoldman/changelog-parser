@@ -8,26 +8,37 @@ var date = /.*[ ](\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?).*/
 var subhead = /^###/
 var listitem = /^[*-]/
 
-function parseChangelog (file, callback) {
+function parseChangelog (file, options, callback) {
+  const defaultOptions = {
+    removeMarkdown: true
+  }
+
+  const opts = Object.assign({}, defaultOptions, options)
+
+  if (typeof callback === 'undefined') {
+    callback = options
+    options = {}
+  }
+
   // return a Promise if invoked without a `callback`
   if (!callback || typeof callback !== 'function') {
-    return doParse(file)
+    return doParse(file, opts)
   }
 
   // otherwise, parse log and invoke callback
-  doParse(file).then(function (log) {
+  doParse(file, opts).then(function (log) {
     callback(null, log)
   })
 }
 
-function doParse (file) {
+function doParse (file, options) {
   var data = {
     log: { versions: [] },
     current: null
   }
 
   // allow `handleLine` to mutate log/current data as `this`.
-  var cb = handleLine.bind(data)
+  var cb = handleLine.bind(data, options)
 
   return new Promise(function (resolve, reject) {
     lineReader.eachLine(file, cb, EOL).then(function () {
@@ -45,7 +56,7 @@ function doParse (file) {
   })
 }
 
-function handleLine (line) {
+function handleLine (options, line) {
   // skip line if it's a link label
   if (line.match(/^\[[^[\]]*\] *?:/)) return
 
@@ -88,12 +99,13 @@ function handleLine (line) {
 
     // handle case where current line is a 'list item':
     if (listitem.exec(line)) {
+      const log = options.removeMarkdown ? removeMarkdown(line) : line
       // add line to 'catch all' array
-      this.current.parsed._.push(removeMarkdown(line))
+      this.current.parsed._.push(log)
 
       // add line to 'active subhead' if applicable (eg. 'Added', 'Changed', etc.)
       if (this.current._private.activeSubhead) {
-        this.current.parsed[this.current._private.activeSubhead].push(removeMarkdown(line))
+        this.current.parsed[this.current._private.activeSubhead].push(log)
       }
     }
   } else {

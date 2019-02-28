@@ -14,7 +14,8 @@
     "Rachel Nehmer <kneemer@gmail.com>",
     "Viktor Havrylin <fer0x.feo@gmail.com>",
     "J R Mykolyn <jrmykolyn@gmail.com>",
-    "Bogdan Plieshka <bogdanplieshka@gmail.com>"
+    "Bogdan Plieshka <bogdanplieshka@gmail.com>",
+    "Ciro Nunes <ciroanunes@gmail.com>"
   ],
   "dependencies": {
     "line-reader": "^0.2.4",

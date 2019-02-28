@@ -54,6 +54,27 @@ parseChangelog('path/to/CHANGELOG.md')
   })
 ```
 
+### Options
+
+You can optionally provide a configuration object as a second parameter to the `parseChangelog` function:
+
+```js
+parseChangelog('path/to/CHANGELOG.md', {
+  // options here...
+});
+```
+
+#### removeMarkdown
+
+Removes the markdown markup from the changelog entries by default. You can change its value to `false` to keep the markdown.
+
+```js
+parseChangelog('path/to/CHANGELOG.md', {
+  removeMarkdown: false // (default: true)
+});
+```
+
+
 ### Command-line interface
 
 There is also a command-line interface available if you install it with `-g`.
