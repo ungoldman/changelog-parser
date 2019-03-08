@@ -45,14 +45,34 @@ If no callback is provided, `parseChangelog` will return a [Promise](https://dev
 
 ```js
 parseChangelog('path/to/CHANGELOG.md')
-  .then(function(result) {
+  .then(function (result) {
     // changelog object
     console.log(result)
   })
-  .catch(() {
+  .catch(function (err) {
     // Whoops, something went wrong!
+    console.error(err)
   })
 ```
+
+### Options
+
+You can optionally provide a configuration object `parseChangelog` function.
+
+```js
+parseChangelog({
+  filePath: 'path/to/CHANGELOG.md',
+  removeMarkdown: false // default: true
+})
+```
+
+#### filePath
+
+Path to changelog file.
+
+#### removeMarkdown
+
+Removes the markdown markup from the changelog entries by default. You can change its value to `false` to keep the markdown.
 
 ### Command-line interface
 
