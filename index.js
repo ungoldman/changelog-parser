@@ -8,30 +8,47 @@ var date = /.*[ ](\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?).*/
 var subhead = /^###/
 var listitem = /^[*-]/
 
-function parseChangelog (file, options, callback) {
-  const defaultOptions = {
-    removeMarkdown: true
+var defaultOptions = { removeMarkdown: true }
+
+/**
+ * Changelog parser.
+ *
+ * @param {string|object} options - changelog file string or options object containing file string
+ * @param {string} options.filePath - path to changelog file
+ * @param {boolean} [options.removeMarkdown=true] - changelog file string to parse
+ * @param {function} [callback] - optional callback
+ * @returns {Promise<object>} - parsed changelog object
+ */
+function parseChangelog (options, callback) {
+  if (typeof options === 'undefined') throw new Error('missing options argument')
+  if (typeof options === 'string') options = { filePath: options }
+  if (typeof options === 'object' && typeof options.filePath !== 'string') {
+    throw new Error('invalid path to file, expected string')
   }
 
-  const opts = Object.assign({}, defaultOptions, options)
+  var opts = Object.assign({}, defaultOptions, options)
+  var changelog = parse(opts)
 
-  if (typeof callback === 'undefined') {
-    callback = options
-    options = {}
+  if (typeof callback === 'function') {
+    changelog
+      .then(function (log) { callback(null, log) })
+      .catch(function (err) { callback(err) })
   }
 
-  // return a Promise if invoked without a `callback`
-  if (!callback || typeof callback !== 'function') {
-    return doParse(file, opts)
-  }
-
-  // otherwise, parse log and invoke callback
-  doParse(file, opts).then(function (log) {
-    callback(null, log)
-  })
+  // otherwise, invoke callback
+  return changelog
 }
 
-function doParse (file, options) {
+/**
+ * Internal parsing logic.
+ *
+ * @param {options} options - options object
+ * @param {string} options.filePath - path to changelog file
+ * @param {boolean} [options.removeMarkdown] - remove markdown
+ * @returns {Promise<object>} - parsed changelog object
+ */
+function parse (options) {
+  var filePath = options.filePath
   var data = {
     log: { versions: [] },
     current: null
@@ -41,7 +58,7 @@ function doParse (file, options) {
   var cb = handleLine.bind(data, options)
 
   return new Promise(function (resolve, reject) {
-    lineReader.eachLine(file, cb, EOL).then(function () {
+    lineReader.eachLine(filePath, cb, EOL).then(function () {
       // push last version into log
       if (data.current) {
         pushCurrent(data)
@@ -56,6 +73,13 @@ function doParse (file, options) {
   })
 }
 
+/**
+ * Handles each line and mutates data object (bound to `this`) as needed.
+ *
+ * @param {object} options - options object
+ * @param {boolean} options.removeMarkdown - whether or not to remove markdown
+ * @param {string} line - line from changelog file
+ */
 function handleLine (options, line) {
   // skip line if it's a link label
   if (line.match(/^\[[^[\]]*\] *?:/)) return

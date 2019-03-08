@@ -1,116 +1,14 @@
 var parseChangelog = require('..')
 var test = require('tape')
-var EOL = require('os').EOL
 var path = require('path')
+var expected = require('./fixtures/expected')
+var removeMarkdownExpected = require('./fixtures/remove-markdown-expected')
+var filePath = path.join(__dirname, 'fixtures', 'CHANGELOG.md')
 
-var expected = {
-  title: 'changelog title',
-  description: 'A cool description (optional).',
-  versions: [
-    { version: null,
-      title: 'unreleased',
-      'date': null,
-      body: '* foo',
-      parsed: {
-        _: [
-          'foo'
-        ]
-      }
-    },
-    { version: 'x.y.z',
-      title: 'x.y.z - YYYY-MM-DD',
-      'date': null,
-      body: '* bar',
-      parsed: {
-        _: [
-          'bar'
-        ]
-      }
-    },
-    { version: 'a.b.c',
-      title: '[a.b.c]',
-      'date': null,
-      body: '### Changes' + EOL + EOL + '* Update API' + EOL + '* Fix bug #1',
-      parsed: {
-        _: [
-          'Update API',
-          'Fix bug #1'
-        ],
-        Changes: [
-          'Update API',
-          'Fix bug #1'
-        ]
-      }
-    },
-    { version: '2.3.0',
-      title: '2.3.0 - 2018-12-18',
-      'date': '2018-12-18',
-      body: '### Added' + EOL + EOL + '- Some changelog generators such as [standard-version](https://github.com/conventional-changelog/standard-version) would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.',
-      parsed: {
-        _: [
-          'Some changelog generators such as standard-version would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.'
-        ],
-        Added: [
-          'Some changelog generators such as standard-version would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.'
-        ]
-      }
-    },
-    { version: '2.2.3-pre.1',
-      title: '2.2.3-pre.1 - 2013-02-14',
-      'date': '2013-02-14',
-      body: '### Added' + EOL + '- Added an item.' + EOL + '* Added another item.' + EOL + EOL + '* Update API',
-      parsed: {
-        _: [
-          'Added an item.',
-          'Added another item.',
-          'Update API'
-        ],
-        Added: [
-          'Added an item.',
-          'Added another item.',
-          'Update API'
-        ]
-      }
-    },
-    { version: '2.0.0-x.7.z.92',
-      title: '2.0.0-x.7.z.92 - 2013-02-14',
-      'date': '2013-02-14',
-      body: '* bark bark' + EOL + '* woof' + EOL + '* arf',
-      parsed: {
-        _: [
-          'bark bark',
-          'woof',
-          'arf'
-        ]
-      }
-    },
-    { version: '1.3.0',
-      title: 'v1.3.0',
-      'date': null,
-      body: '* make it so',
-      parsed: {
-        _: [
-          'make it so'
-        ]
-      }
-    },
-    { version: '1.2.3',
-      title: '[1.2.3](link)',
-      'date': null,
-      body: '* init',
-      parsed: {
-        _: [
-          'init'
-        ]
-      }
-    }
-  ]
-}
-
-test('meet expectations', function (t) {
+test('parses example changelog', function (t) {
   t.plan(1)
 
-  parseChangelog(path.join(__dirname, 'CHANGELOG.md'), function (err, result) {
+  parseChangelog(filePath, function (err, result) {
     if (err) throw err
 
     t.deepEqual(result, expected)
@@ -121,7 +19,7 @@ test('meet expectations', function (t) {
 test('returns a Promise when invoked without a valid `callback`', function (t) {
   t.plan(2)
 
-  var result = parseChangelog(path.join(__dirname, 'CHANGELOG.md'))
+  var result = parseChangelog(filePath)
 
   t.true(typeof result === 'object')
   t.true(result instanceof Promise)
@@ -130,7 +28,7 @@ test('returns a Promise when invoked without a valid `callback`', function (t) {
 test('resolved Promise contains a "CHANGELOG" object', function (t) {
   t.plan(1)
 
-  parseChangelog(path.join(__dirname, 'CHANGELOG.md')).then(function (result) {
+  parseChangelog(filePath).then(function (result) {
     t.deepEqual(result, expected)
     t.end()
   })
@@ -139,14 +37,41 @@ test('resolved Promise contains a "CHANGELOG" object', function (t) {
 test('callback and Promise methods should yield identical values', function (t) {
   t.plan(1)
 
-  parseChangelog(path.join(__dirname, 'CHANGELOG.md'), function (err, resultA) {
+  parseChangelog(filePath, function (err, resultA) {
     if (err) t.fail()
 
-    parseChangelog(path.join(__dirname, 'CHANGELOG.md'))
+    parseChangelog(filePath)
             .then(function (resultB) {
               t.deepEqual(resultA, resultB)
               t.end()
             })
             .catch(t.fail)
+  })
+})
+
+test('accepts object as first argument', function (t) {
+  t.plan(1)
+
+  parseChangelog({ filePath: filePath }, function (err, result) {
+    if (err) throw err
+
+    t.deepEqual(result, expected)
+    t.end()
+  })
+})
+
+test('accepts { removeMardown: false } option', function (t) {
+  t.plan(1)
+
+  var options = {
+    filePath: filePath,
+    removeMarkdown: false
+  }
+
+  parseChangelog(options, function (err, result) {
+    if (err) throw err
+
+    t.deepEqual(result, removeMarkdownExpected)
+    t.end()
   })
 })
