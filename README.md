@@ -96,7 +96,7 @@ Alternately you can run it without arguments and it will look for a `CHANGELOG.m
 
 This module assumes your change log is a [markdown](http://daringfireball.net/projects/markdown/syntax) file structured roughly like so:
 
-```md
+```markdown
 # changelog title
 
 A cool description (optional).
