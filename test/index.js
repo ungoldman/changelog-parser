@@ -1,6 +1,7 @@
 var parseChangelog = require('..')
 var test = require('tape')
 var path = require('path')
+var fs = require('fs')
 var expected = require('./fixtures/expected')
 var removeMarkdownExpected = require('./fixtures/remove-markdown-expected')
 var filePath = path.join(__dirname, 'fixtures', 'CHANGELOG.md')
@@ -9,6 +10,17 @@ test('parses example changelog', function (t) {
   t.plan(1)
 
   parseChangelog(filePath, function (err, result) {
+    if (err) throw err
+
+    t.deepEqual(result, expected)
+    t.end()
+  })
+})
+
+test('parses example changelog as text', function (t) {
+  t.plan(1)
+
+  parseChangelog({text: fs.readFileSync(filePath, 'utf8')}, function (err, result) {
     if (err) throw err
 
     t.deepEqual(result, expected)

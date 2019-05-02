@@ -14,7 +14,8 @@ var defaultOptions = { removeMarkdown: true }
  * Changelog parser.
  *
  * @param {string|object} options - changelog file string or options object containing file string
- * @param {string} options.filePath - path to changelog file
+ * @param {string=} options.filePath - path to changelog file (or you can use options.text)
+ * @param {string=} options.text - changelog text (or you can use options.filePath)
  * @param {boolean} [options.removeMarkdown=true] - changelog file string to parse
  * @param {function} [callback] - optional callback
  * @returns {Promise<object>} - parsed changelog object
@@ -22,7 +23,7 @@ var defaultOptions = { removeMarkdown: true }
 function parseChangelog (options, callback) {
   if (typeof options === 'undefined') throw new Error('missing options argument')
   if (typeof options === 'string') options = { filePath: options }
-  if (typeof options === 'object' && typeof options.filePath !== 'string') {
+  if (typeof options === 'object' && typeof options.filePath !== 'string' && typeof options.text !== 'string') {
     throw new Error('invalid path to file, expected string')
   }
 
@@ -43,12 +44,14 @@ function parseChangelog (options, callback) {
  * Internal parsing logic.
  *
  * @param {options} options - options object
- * @param {string} options.filePath - path to changelog file
+ * @param {string=} options.filePath - path to changelog file (or you can use options.text)
+ * @param {string=} options.text - changelog text (or you can use options.filePath)
  * @param {boolean} [options.removeMarkdown] - remove markdown
  * @returns {Promise<object>} - parsed changelog object
  */
 function parse (options) {
   var filePath = options.filePath
+  var text = options.text
   var data = {
     log: { versions: [] },
     current: null
@@ -58,7 +61,7 @@ function parse (options) {
   var cb = handleLine.bind(data, options)
 
   return new Promise(function (resolve, reject) {
-    lineReader.eachLine(filePath, cb, EOL).then(function () {
+    function done () {
       // push last version into log
       if (data.current) {
         pushCurrent(data)
@@ -69,7 +72,14 @@ function parse (options) {
       if (data.log.description === '') delete data.log.description
 
       resolve(data.log)
-    })
+    }
+
+    if (text) {
+      text.split(/\r\n?|\n/mg).forEach(cb)
+      done()
+    } else {
+      lineReader.eachLine(filePath, cb, EOL).then(done)
+    }
   })
 }
 
