@@ -6,6 +6,22 @@ var expected = require('./fixtures/expected')
 var removeMarkdownExpected = require('./fixtures/remove-markdown-expected')
 var filePath = path.join(__dirname, 'fixtures', 'CHANGELOG.md')
 
+test('throws on bad params', function (t) {
+  t.plan(3)
+
+  var missing = 'must provide filePath or text'
+  var invalidPath = 'invalid filePath, expected string'
+  var invalidText = 'invalid text, expected string'
+
+  t.throws(parseChangelog, missing, missing)
+  t.throws(function () {
+    parseChangelog({ filePath: 0 })
+  }, invalidPath, invalidPath)
+  t.throws(function () {
+    parseChangelog({ text: 0 })
+  }, invalidText, invalidText)
+})
+
 test('parses example changelog', function (t) {
   t.plan(1)
 
