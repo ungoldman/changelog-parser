@@ -23,8 +23,23 @@ var defaultOptions = { removeMarkdown: true }
 function parseChangelog (options, callback) {
   if (typeof options === 'undefined') throw new Error('missing options argument')
   if (typeof options === 'string') options = { filePath: options }
-  if (typeof options === 'object' && typeof options.filePath !== 'string' && typeof options.text !== 'string') {
-    throw new Error('invalid path to file, expected string')
+  if (typeof options === 'object') {
+    var hasFilePath = typeof options.filePath !== 'undefined'
+    var hasText = typeof options.text !== 'undefined'
+    var invalidFilePath = typeof options.filePath !== 'string'
+    var invalidText = typeof options.text !== 'string'
+
+    if (!hasFilePath && !hasText) {
+      throw new Error('must provide filePath or text')
+    }
+
+    if (hasFilePath && invalidFilePath) {
+      throw new Error('invalid filePath, expected string')
+    }
+
+    if (hasText && invalidText) {
+      throw new Error('invalid text, expected string')
+    }
   }
 
   var opts = Object.assign({}, defaultOptions, options)
