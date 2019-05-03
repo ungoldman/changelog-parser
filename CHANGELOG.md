@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.8.0](https://github.com/hypermodules/changelog-parser/compare/v2.7.0...v2.8.0) - 2019-05-02
+
+### Features
+
+- accept input text instead of file (#32) - @jedwards1211 & @ungoldman
+
 ## [2.7.0](https://github.com/hypermodules/changelog-parser/compare/v2.6.0...v2.7.0) - 2019-03-07
 
 ### Features
