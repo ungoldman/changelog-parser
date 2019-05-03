@@ -14,8 +14,8 @@ var defaultOptions = { removeMarkdown: true }
  * Changelog parser.
  *
  * @param {string|object} options - changelog file string or options object containing file string
- * @param {string=} options.filePath - path to changelog file (or you can use options.text)
- * @param {string=} options.text - changelog text (or you can use options.filePath)
+ * @param {string} [options.filePath] - path to changelog file
+ * @param {string} [options.text] - changelog text (filePath alternative)
  * @param {boolean} [options.removeMarkdown=true] - changelog file string to parse
  * @param {function} [callback] - optional callback
  * @returns {Promise<object>} - parsed changelog object
@@ -44,8 +44,8 @@ function parseChangelog (options, callback) {
  * Internal parsing logic.
  *
  * @param {options} options - options object
- * @param {string=} options.filePath - path to changelog file (or you can use options.text)
- * @param {string=} options.text - changelog text (or you can use options.filePath)
+ * @param {string} [options.filePath] - path to changelog file
+ * @param {string} [options.text] - changelog text (filePath alternative)
  * @param {boolean} [options.removeMarkdown] - remove markdown
  * @returns {Promise<object>} - parsed changelog object
  */
