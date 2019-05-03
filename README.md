@@ -70,6 +70,10 @@ parseChangelog({
 
 Path to changelog file.
 
+#### text
+
+Text of changelog file (you can use this instead of `filePath`).
+
 #### removeMarkdown
 
 Removes the markdown markup from the changelog entries by default. You can change its value to `false` to keep the markdown.

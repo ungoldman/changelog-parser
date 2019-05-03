@@ -1,14 +1,42 @@
 var parseChangelog = require('..')
 var test = require('tape')
 var path = require('path')
+var fs = require('fs')
 var expected = require('./fixtures/expected')
 var removeMarkdownExpected = require('./fixtures/remove-markdown-expected')
 var filePath = path.join(__dirname, 'fixtures', 'CHANGELOG.md')
+
+test('throws on bad params', function (t) {
+  t.plan(3)
+
+  var missing = 'must provide filePath or text'
+  var invalidPath = 'invalid filePath, expected string'
+  var invalidText = 'invalid text, expected string'
+
+  t.throws(parseChangelog, missing, missing)
+  t.throws(function () {
+    parseChangelog({ filePath: 0 })
+  }, invalidPath, invalidPath)
+  t.throws(function () {
+    parseChangelog({ text: 0 })
+  }, invalidText, invalidText)
+})
 
 test('parses example changelog', function (t) {
   t.plan(1)
 
   parseChangelog(filePath, function (err, result) {
+    if (err) throw err
+
+    t.deepEqual(result, expected)
+    t.end()
+  })
+})
+
+test('parses example changelog as text', function (t) {
+  t.plan(1)
+
+  parseChangelog({text: fs.readFileSync(filePath, 'utf8')}, function (err, result) {
     if (err) throw err
 
     t.deepEqual(result, expected)
