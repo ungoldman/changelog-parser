@@ -1,6 +1,7 @@
 var EOL = require('os').EOL
 var lineReader = require('line-reader')
 var removeMarkdown = require('remove-markdown')
+const { readFileSync } = require('fs')
 
 // patterns
 var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
@@ -8,7 +9,27 @@ var date = /.*[ ](\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?).*/
 var subhead = /^###/
 var listitem = /^[*-]/
 
-var defaultOptions = { removeMarkdown: true }
+var defaultOptions = { removeMarkdown: true, lineEndings: EOL }
+
+function detectLineEndings (source) {
+  var cr = source.split('\r').length
+  var lf = source.split('\n').length
+  var crlf = source.split('\r\n').length
+
+  if (cr + lf === 0) {
+    return undefined
+  }
+
+  if (crlf === cr && crlf === lf) {
+    return '\r\n'
+  }
+
+  if (cr > lf) {
+    return '\r'
+  } else {
+    return '\n'
+  }
+}
 
 /**
  * Changelog parser.
@@ -17,6 +38,7 @@ var defaultOptions = { removeMarkdown: true }
  * @param {string} [options.filePath] - path to changelog file
  * @param {string} [options.text] - changelog text (filePath alternative)
  * @param {boolean} [options.removeMarkdown=true] - changelog file string to parse
+ * @param {string} [options.lineEndings] - changelog line endings style ('CRLF' or 'LF'), will auto-detect from file if not supplied, or fall back to current system line endings style
  * @param {function} [callback] - optional callback
  * @returns {Promise<object>} - parsed changelog object
  */
@@ -40,6 +62,11 @@ function parseChangelog (options, callback) {
     if (hasText && invalidText) {
       throw new Error('invalid text, expected string')
     }
+
+    if (typeof options.lineEndings !== 'string') {
+      var contents = hasText ? options.text : readFileSync(options.filePath, 'utf8').toString()
+      options.lineEndings = detectLineEndings(contents)
+    }
   }
 
   var opts = Object.assign({}, defaultOptions, options)
@@ -62,6 +89,7 @@ function parseChangelog (options, callback) {
  * @param {string} [options.filePath] - path to changelog file
  * @param {string} [options.text] - changelog text (filePath alternative)
  * @param {boolean} [options.removeMarkdown] - remove markdown
+ * @param {string} [options.lineEndings] - changelog line endings style ('CRLF' or 'LF')
  * @returns {Promise<object>} - parsed changelog object
  */
 function parse (options) {
@@ -79,11 +107,11 @@ function parse (options) {
     function done () {
       // push last version into log
       if (data.current) {
-        pushCurrent(data)
+        pushCurrent(data, options)
       }
 
       // clean up description
-      data.log.description = clean(data.log.description)
+      data.log.description = clean(data.log.description, options)
       if (data.log.description === '') delete data.log.description
 
       resolve(data.log)
@@ -93,7 +121,7 @@ function parse (options) {
       text.split(/\r\n?|\n/mg).forEach(cb)
       done()
     } else {
-      lineReader.eachLine(filePath, cb, EOL).then(done)
+      lineReader.eachLine(filePath, cb, options.lineEndings).then(done)
     }
   })
 }
@@ -103,6 +131,7 @@ function parse (options) {
  *
  * @param {object} options - options object
  * @param {boolean} options.removeMarkdown - whether or not to remove markdown
+ * @param {string} options.lineEndings - changelog line endings style ('CRLF' or 'LF')
  * @param {string} line - line from changelog file
  */
 function handleLine (options, line) {
@@ -117,7 +146,7 @@ function handleLine (options, line) {
 
   // new version found!
   if (line.match(/^##? ?[^#]/)) {
-    if (this.current && this.current.title) pushCurrent(this)
+    if (this.current && this.current.title) pushCurrent(this, options)
 
     this.current = versionFactory()
 
@@ -132,7 +161,7 @@ function handleLine (options, line) {
 
   // deal with body or description content
   if (this.current) {
-    this.current.body += line + EOL
+    this.current.body += line + options.lineEndings
 
     // handle case where current line is a 'subhead':
     // - 'handleize' subhead.
@@ -158,7 +187,7 @@ function handleLine (options, line) {
       }
     }
   } else {
-    this.log.description = (this.log.description || '') + line + EOL
+    this.log.description = (this.log.description || '') + line + options.lineEndings
   }
 }
 
@@ -177,23 +206,23 @@ function versionFactory () {
   }
 }
 
-function pushCurrent (data) {
+function pushCurrent (data, options) {
   // remove private properties
   delete data.current._private
 
-  data.current.body = clean(data.current.body)
+  data.current.body = clean(data.current.body, options)
   data.log.versions.push(data.current)
 }
 
-function clean (str) {
+function clean (str, options) {
   if (!str) return ''
 
   // trim
   str = str.trim()
   // remove leading newlines
-  str = str.replace(new RegExp('[' + EOL + ']*'), '')
+  str = str.replace(new RegExp('[' + options.lineEndings + ']*'), '')
   // remove trailing newlines
-  str = str.replace(new RegExp('[' + EOL + ']*$'), '')
+  str = str.replace(new RegExp('[' + options.lineEndings + ']*$'), '')
 
   return str
 }
