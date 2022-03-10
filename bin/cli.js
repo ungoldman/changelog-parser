@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-var parseChangelog = require('..')
-var file = process.argv[2] || 'CHANGELOG.md'
-var help = process.argv[2] === '-h' || process.argv[2] === '--help'
+const parseChangelog = require('..')
+const file = process.argv[2] || 'CHANGELOG.md'
+const help = process.argv[2] === '-h' || process.argv[2] === '--help'
 
 if (help) {
   console.log('usage: changelog-parser [filename]')
