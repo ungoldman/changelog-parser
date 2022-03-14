@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.8.1](https://github.com/ungoldman/changelog-parser/compare/v2.8.0...v2.8.1) - 2022-03-13
 
+### Fixes
+
 - ci: drop support for non-LTS node versions (#39)
 - fix: update URLs for ownership transfer
 - ci: add dependabot.yml
