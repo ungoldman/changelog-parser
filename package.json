@@ -7,7 +7,7 @@
     "changelog-parser": "./bin/cli.js"
   },
   "bugs": {
-    "url": "https://github.com/hypermodules/changelog-parser/issues"
+    "url": "https://github.com/ungoldman/changelog-parser/issues"
   },
   "contributors": [
     "Nate Goldman <ungoldman@gmail.com>",
@@ -28,7 +28,7 @@
     "tap-spec": "^5.0.0",
     "tape": "^5.5.2"
   },
-  "homepage": "https://github.com/hypermodules/changelog-parser",
+  "homepage": "https://github.com/ungoldman/changelog-parser",
   "keywords": [
     "CHANGELOG.md",
     "changelog",
@@ -41,7 +41,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hypermodules/changelog-parser.git"
+    "url": "https://github.com/ungoldman/changelog-parser.git"
   },
   "scripts": {
     "release": "gh-release && npm publish",
