@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.8.1](https://github.com/ungoldman/changelog-parser/compare/v2.8.0...v2.8.1) - 2022-03-13
+
+- ci: drop support for non-LTS node versions (#39)
+- fix: update URLs for ownership transfer
+- ci: add dependabot.yml
+- docs: update status badges
+- deps(dev): tape@5, tap-spec@5, standard@16, gh-release@6 (#38)
+- ci: multi-arch tests (mac, windows, linux)
+- docs: add examples to options
+
 ## [2.8.0](https://github.com/ungoldman/changelog-parser/compare/v2.7.0...v2.8.0) - 2019-05-02
 
 ### Features
