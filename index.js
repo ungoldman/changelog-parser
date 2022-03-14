@@ -1,14 +1,14 @@
-var EOL = require('os').EOL
-var lineReader = require('line-reader')
-var removeMarkdown = require('remove-markdown')
+const EOL = require('os').EOL
+const lineReader = require('line-reader')
+const removeMarkdown = require('remove-markdown')
 
 // patterns
-var semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
-var date = /.*[ ](\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?).*/
-var subhead = /^###/
-var listitem = /^[*-]/
+const semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
+const date = /.*[ ](\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?).*/
+const subhead = /^###/
+const listitem = /^[*-]/
 
-var defaultOptions = { removeMarkdown: true }
+const defaultOptions = { removeMarkdown: true }
 
 /**
  * Changelog parser.
@@ -24,10 +24,10 @@ function parseChangelog (options, callback) {
   if (typeof options === 'undefined') throw new Error('missing options argument')
   if (typeof options === 'string') options = { filePath: options }
   if (typeof options === 'object') {
-    var hasFilePath = typeof options.filePath !== 'undefined'
-    var hasText = typeof options.text !== 'undefined'
-    var invalidFilePath = typeof options.filePath !== 'string'
-    var invalidText = typeof options.text !== 'string'
+    const hasFilePath = typeof options.filePath !== 'undefined'
+    const hasText = typeof options.text !== 'undefined'
+    const invalidFilePath = typeof options.filePath !== 'string'
+    const invalidText = typeof options.text !== 'string'
 
     if (!hasFilePath && !hasText) {
       throw new Error('must provide filePath or text')
@@ -42,8 +42,8 @@ function parseChangelog (options, callback) {
     }
   }
 
-  var opts = Object.assign({}, defaultOptions, options)
-  var changelog = parse(opts)
+  const opts = Object.assign({}, defaultOptions, options)
+  const changelog = parse(opts)
 
   if (typeof callback === 'function') {
     changelog
@@ -65,15 +65,15 @@ function parseChangelog (options, callback) {
  * @returns {Promise<object>} - parsed changelog object
  */
 function parse (options) {
-  var filePath = options.filePath
-  var text = options.text
-  var data = {
+  const filePath = options.filePath
+  const text = options.text
+  const data = {
     log: { versions: [] },
     current: null
   }
 
   // allow `handleLine` to mutate log/current data as `this`.
-  var cb = handleLine.bind(data, options)
+  const cb = handleLine.bind(data, options)
 
   return new Promise(function (resolve, reject) {
     function done () {
@@ -138,7 +138,7 @@ function handleLine (options, line) {
     // - 'handleize' subhead.
     // - add subhead to 'parsed' data if not already present.
     if (subhead.exec(line)) {
-      var key = line.replace('###', '').trim()
+      const key = line.replace('###', '').trim()
 
       if (!this.current.parsed[key]) {
         this.current.parsed[key] = []
