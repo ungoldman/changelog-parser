@@ -1,16 +1,16 @@
 # changelog-parser
 
-[![npm][npm-img]][npm-url] [![travis][travis-img]][travis-url] [![standard][standard-image]][standard-url] [![downloads][downloads-img]][npm-url]
+[![npm][npm-image]][npm-url]
+[![build][build-image]][build-url]
+[![downloads][downloads-image]][npm-url]
 
 Change log parser for node.
 
-[npm-img]: https://img.shields.io/npm/v/changelog-parser.svg?style=flat-square
+[npm-image]: https://img.shields.io/npm/v/changelog-parser.svg
 [npm-url]: https://www.npmjs.com/package/changelog-parser
-[travis-img]: https://img.shields.io/travis/hypermodules/changelog-parser.svg?style=flat-square
-[travis-url]: https://travis-ci.org/hypermodules/changelog-parser
-[standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
-[standard-url]: http://standardjs.com/
-[downloads-img]: https://img.shields.io/npm/dm/changelog-parser.svg?style=flat-square
+[build-image]: https://github.com/ungoldman/changelog-parser/actions/workflows/tests.yml/badge.svg
+[build-url]: https://github.com/ungoldman/changelog-parser/actions/workflows/tests.yml
+[downloads-image]: https://img.shields.io/npm/dm/changelog-parser.svg
 
 ## Install
 
