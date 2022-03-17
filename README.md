@@ -1,3 +1,7 @@
+<div align="center">
+
+<img src="./log.png">
+
 # changelog-parser
 
 [![npm][npm-image]][npm-url]
@@ -11,6 +15,8 @@ Change log parser for node.
 [build-image]: https://github.com/ungoldman/changelog-parser/actions/workflows/tests.yml/badge.svg
 [build-url]: https://github.com/ungoldman/changelog-parser/actions/workflows/tests.yml
 [downloads-image]: https://img.shields.io/npm/dm/changelog-parser.svg
+
+</div>
 
 ## Install
 
@@ -259,3 +265,5 @@ Contributions welcome! Please read the [contributing guidelines](CONTRIBUTING.md
 ## License
 
 [ISC](LICENSE.md)
+
+Log image is from [emojipedia](https://emojipedia.org/wood/).
