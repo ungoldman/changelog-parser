@@ -1,7 +1,11 @@
 ---
 name: tests
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   test:
@@ -10,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [lts/*]
+        node: [12, 14, 16]
 
     steps:
       - uses: actions/checkout@v3
