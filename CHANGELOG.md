@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0](https://github.com/ungoldman/changelog-parser/compare/v2.8.1...v3.0.0) - 2022-12-20
+
+### Breaking Changes
+
+- Drop support for Node 12 (EOL)
+
+### Fixes
+
+- parse dates in parentheses (#49)
+
+### Misc
+
+- deps: remove-markdown@0.5.0 (#44)
+
 ## [2.8.1](https://github.com/ungoldman/changelog-parser/compare/v2.8.0...v2.8.1) - 2022-03-13
 
 ### Fixes
