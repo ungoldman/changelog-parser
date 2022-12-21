@@ -15,6 +15,12 @@ A cool description (optional).
 * Update API
 * Fix bug #1
 
+# 2.3.1 (2018-12-19)
+
+### Fixed
+
+- Support dates in parentheses.
+
 # 2.3.0 - 2018-12-18
 
 ### Added

@@ -80,7 +80,7 @@ test('callback and Promise methods should yield identical values', function (t) 
 test('accepts object as first argument', function (t) {
   t.plan(1)
 
-  parseChangelog({ filePath: filePath }, function (err, result) {
+  parseChangelog({ filePath }, function (err, result) {
     if (err) throw err
 
     t.deepEqual(result, expected)
@@ -92,7 +92,7 @@ test('accepts { removeMardown: false } option', function (t) {
   t.plan(1)
 
   const options = {
-    filePath: filePath,
+    filePath,
     removeMarkdown: false
   }
 

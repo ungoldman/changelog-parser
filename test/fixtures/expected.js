@@ -43,6 +43,20 @@ module.exports = {
       }
     },
     {
+      version: '2.3.1',
+      title: '2.3.1 (2018-12-19)',
+      date: '2018-12-19',
+      body: '### Fixed' + EOL + EOL + '- Support dates in parentheses.',
+      parsed: {
+        _: [
+          'Support dates in parentheses.'
+        ],
+        Fixed: [
+          'Support dates in parentheses.'
+        ]
+      }
+    },
+    {
       version: '2.3.0',
       title: '2.3.0 - 2018-12-18',
       date: '2018-12-18',
