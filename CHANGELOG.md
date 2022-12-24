@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.1](https://github.com/ungoldman/changelog-parser/compare/v3.0.0...v3.0.1) - 2022-12-23
+
+### Fixes
+
+- fix(pkg): specify minimum supported node version (14)
+
 ## [3.0.0](https://github.com/ungoldman/changelog-parser/compare/v2.8.1...v3.0.0) - 2022-12-20
 
 ### Breaking Changes
