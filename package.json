@@ -1,7 +1,7 @@
 {
   "name": "changelog-parser",
   "description": "Change log parser for node.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": "Nate Goldman <ungoldman@gmail.com>",
   "bin": {
     "changelog-parser": "./bin/cli.js"
