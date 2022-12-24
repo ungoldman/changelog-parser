@@ -28,6 +28,9 @@
     "tap-spec": "^5.0.0",
     "tape": "^5.5.2"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "homepage": "https://github.com/ungoldman/changelog-parser",
   "keywords": [
     "CHANGELOG.md",
