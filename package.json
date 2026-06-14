@@ -56,14 +56,14 @@
     "url": "git+https://github.com/ungoldman/changelog-parser.git"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "coverage": "npm run build && node --test --experimental-test-coverage --test-coverage-exclude=\"test/**\" --test-coverage-exclude=\"dist/**\" --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 test/*.test.ts",
     "format": "biome check --write .",
     "lint": "biome check .",
     "prebuild": "rm -rf dist",
     "prepublishOnly": "npm run build",
     "test": "npm run lint && npm run typecheck && npm run build && node --test test/*.test.ts",
-    "typecheck": "tsc -p tsconfig.test.json"
+    "typecheck": "tsc"
   },
   "sideEffects": false,
   "type": "module",
