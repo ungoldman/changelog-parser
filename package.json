@@ -4,7 +4,7 @@
   "version": "3.0.1",
   "author": "Nate Goldman <ungoldman@gmail.com>",
   "bin": {
-    "changelog-parser": "./bin/cli.js"
+    "changelog-parser": "./dist/cli.js"
   },
   "bugs": {
     "url": "https://github.com/ungoldman/changelog-parser/issues"
@@ -19,18 +19,26 @@
     "Andy Edwards <jedwards@fastmail.com>"
   ],
   "dependencies": {
-    "line-reader": "^0.2.4",
-    "remove-markdown": "^0.5.0"
+    "remove-markdown": "^0.6.4"
   },
   "devDependencies": {
-    "gh-release": "^7.0.0",
-    "standard": "^17.0.0",
-    "tap-spec": "^5.0.0",
-    "tape": "^5.5.2"
+    "@biomejs/biome": "^2.5.0",
+    "@types/node": "^22.19.21",
+    "fast-check": "^4.8.0",
+    "typescript": "^6.0.3"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=22.12.0"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "homepage": "https://github.com/ungoldman/changelog-parser",
   "keywords": [
     "CHANGELOG.md",
@@ -41,13 +49,23 @@
     "versioning"
   ],
   "license": "ISC",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ungoldman/changelog-parser.git"
+    "url": "git+https://github.com/ungoldman/changelog-parser.git"
   },
   "scripts": {
-    "release": "gh-release && npm publish",
-    "test": "standard && node test | tap-spec"
-  }
+    "build": "tsc",
+    "coverage": "npm run build && node --test --experimental-test-coverage --test-coverage-exclude=\"test/**\" --test-coverage-exclude=\"dist/**\" --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 test/*.test.ts",
+    "format": "biome check --write .",
+    "lint": "biome check .",
+    "prebuild": "rm -rf dist",
+    "prepublishOnly": "npm run build",
+    "test": "npm run lint && npm run typecheck && npm run build && node --test test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.test.json"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }
