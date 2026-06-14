@@ -144,9 +144,8 @@ function handleLine(state: ParseState, options: ChangelogOptions, line: string):
 
   // new version found!
   if (line.match(/^##? ?[^#]/)) {
-    // a previous entry with a title is finalized here; an empty-title entry
-    // (degenerate whitespace-only heading) is dropped, preserving prior behavior
-    if (state.current?.title) pushCurrent(state)
+    // finalize the previous entry, including empty-title ones, matching the end-of-input flush
+    if (state.current) pushCurrent(state)
 
     state.current = versionFactory()
     state.activeSubhead = null
