@@ -37,7 +37,7 @@ Version headings may be `#`, `##`, or `###`, with or without a `[bracketed]` and
 
 ## Usage
 
-This module is [ESM-only](https://nodejs.org/api/esm.html) and requires Node.js >= 22.12. It exports a single function, available as both a default and a named export. It supports both callbacks and promises.
+This module is [ESM-only](https://nodejs.org/api/esm.html). It exports a single function, available as both a default and a named export. It supports both callbacks and promises.
 
 ```js
 import parseChangelog from 'changelog-parser'
