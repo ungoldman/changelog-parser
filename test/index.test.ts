@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
 import fc from 'fast-check'
+import removeMarkdown from 'remove-markdown'
 import parseChangelog from '../src/index.ts'
 import expected from './fixtures/expected.ts'
 import removeMarkdownExpected from './fixtures/remove-markdown-expected.ts'
@@ -170,5 +171,41 @@ test('property: every version heading yields one entry, regardless of line endin
         }
       }
     )
+  )
+})
+
+test('resolves standalone brackets against link definitions (#46)', async () => {
+  const text = [
+    '# Changelog',
+    '',
+    '## 1.0.0',
+    '* add some new stuff [incomplete] ([abc](https://x/abc))',
+    '* see [defined] for details',
+    '* keep [undefined] literal',
+    '',
+    '[defined]: https://example.com'
+  ].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.deepStrictEqual(result.versions[0].parsed._, [
+    // [incomplete] has no definition, so it stays literal; the real [abc](url) link strips
+    'add some new stuff [incomplete] (abc)',
+    // [defined] resolves to a definition below, so it is a link and renders as its text
+    'see defined for details',
+    // [undefined] has no definition, so it stays literal
+    'keep [undefined] literal'
+  ])
+})
+
+test('property: stripping bracket-free items matches remove-markdown', async () => {
+  const safe = fc
+    .string()
+    .filter((s) => !s.includes('[') && !s.includes(']') && !s.includes('\n') && !s.includes('\r'))
+
+  await fc.assert(
+    fc.asyncProperty(safe, async (item) => {
+      const result = await parseChangelog({ text: `# t\n\n## 1.0.0\n* ${item}\n` })
+      assert.equal(result.versions[0].parsed._[0], removeMarkdown(`* ${item}`))
+    })
   )
 })
