@@ -1,6 +1,8 @@
-const EOL = require('os').EOL
+import type { Changelog } from '../../src/index.ts'
 
-module.exports = {
+// Expected output with the default `removeMarkdown: true`.
+// Body strings are joined with '\n' (the parser normalizes line endings).
+const expected: Changelog = {
   title: 'changelog title',
   description: 'A cool description (optional).',
   versions: [
@@ -10,9 +12,7 @@ module.exports = {
       date: null,
       body: '* foo',
       parsed: {
-        _: [
-          'foo'
-        ]
+        _: ['foo']
       }
     },
     {
@@ -21,46 +21,34 @@ module.exports = {
       date: null,
       body: '* bar',
       parsed: {
-        _: [
-          'bar'
-        ]
+        _: ['bar']
       }
     },
     {
       version: 'a.b.c',
       title: '[a.b.c]',
       date: null,
-      body: '### Changes' + EOL + EOL + '* Update API' + EOL + '* Fix bug #1',
+      body: '### Changes\n\n* Update API\n* Fix bug #1',
       parsed: {
-        _: [
-          'Update API',
-          'Fix bug #1'
-        ],
-        Changes: [
-          'Update API',
-          'Fix bug #1'
-        ]
+        _: ['Update API', 'Fix bug #1'],
+        Changes: ['Update API', 'Fix bug #1']
       }
     },
     {
       version: '2.3.1',
       title: '2.3.1 (2018-12-19)',
       date: '2018-12-19',
-      body: '### Fixed' + EOL + EOL + '- Support dates in parentheses.',
+      body: '### Fixed\n\n- Support dates in parentheses.',
       parsed: {
-        _: [
-          'Support dates in parentheses.'
-        ],
-        Fixed: [
-          'Support dates in parentheses.'
-        ]
+        _: ['Support dates in parentheses.'],
+        Fixed: ['Support dates in parentheses.']
       }
     },
     {
       version: '2.3.0',
       title: '2.3.0 - 2018-12-18',
       date: '2018-12-18',
-      body: '### Added' + EOL + EOL + '- Some changelog generators such as [standard-version](https://github.com/conventional-changelog/standard-version) would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.',
+      body: '### Added\n\n- Some changelog generators such as [standard-version](https://github.com/conventional-changelog/standard-version) would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.',
       parsed: {
         _: [
           'Some changelog generators such as standard-version would produce H1s for major versions and H2s for minor versions. We want the parser to be able to parse both.'
@@ -74,31 +62,19 @@ module.exports = {
       version: '2.2.3-pre.1',
       title: '2.2.3-pre.1 - 2013-02-14',
       date: '2013-02-14',
-      body: '### Added' + EOL + '- Added an item.' + EOL + '* Added another item.' + EOL + EOL + '* Update API',
+      body: '### Added\n- Added an item.\n* Added another item.\n\n* Update API',
       parsed: {
-        _: [
-          'Added an item.',
-          'Added another item.',
-          'Update API'
-        ],
-        Added: [
-          'Added an item.',
-          'Added another item.',
-          'Update API'
-        ]
+        _: ['Added an item.', 'Added another item.', 'Update API'],
+        Added: ['Added an item.', 'Added another item.', 'Update API']
       }
     },
     {
       version: '2.0.0-x.7.z.92',
       title: '2.0.0-x.7.z.92 - 2013-02-14',
       date: '2013-02-14',
-      body: '* bark bark' + EOL + '* woof' + EOL + '* arf',
+      body: '* bark bark\n* woof\n* arf',
       parsed: {
-        _: [
-          'bark bark',
-          'woof',
-          'arf'
-        ]
+        _: ['bark bark', 'woof', 'arf']
       }
     },
     {
@@ -107,9 +83,7 @@ module.exports = {
       date: null,
       body: '* make it so',
       parsed: {
-        _: [
-          'make it so'
-        ]
+        _: ['make it so']
       }
     },
     {
@@ -118,10 +92,10 @@ module.exports = {
       date: null,
       body: '* init',
       parsed: {
-        _: [
-          'init'
-        ]
+        _: ['init']
       }
     }
   ]
 }
+
+export default expected
