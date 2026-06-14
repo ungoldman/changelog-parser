@@ -51,6 +51,7 @@ const date = /.*[ ]\(?(\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?)\)?.*/
 const subhead = /^###/
 const listitem = /^[*-]/
 const lineSplit = /\r\n?|\n/
+const htmlComment = /<!--[\s\S]*?-->/g
 
 interface ParseState {
   log: Changelog
@@ -107,13 +108,16 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
       ? options.text
       : await readFile(options.filePath as string, 'utf8')
 
+  // strip HTML comments (single and multi-line) so they are not parsed as content
+  const content = text.replace(htmlComment, '')
+
   const state: ParseState = {
     log: { versions: [] },
     current: null,
     activeSubhead: null
   }
 
-  for (const line of text.split(lineSplit)) {
+  for (const line of content.split(lineSplit)) {
     handleLine(state, options, line)
   }
 
