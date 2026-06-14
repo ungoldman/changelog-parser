@@ -288,6 +288,8 @@ Each entry is available as an object in the `versions` array. The body of a give
 - `body` - A string containing all of the updates/changes/etc. for the current entry. This property includes both plain text and markdown.
 - `parsed` - An object which points to one or more arrays of data for the current entry. All data for the current entry is present in the array at key `_` (eg. `parsed._`). If the entry contains subheadings (eg. `### Added`, `### Changed`), then any items underneath each subheading will be present in an array at the corresponding key (eg. `parsed.Added`, `parsed.Changed`). Each array contains plain text.
 
+`parsed` is flat: it captures one entry per top-level list item. Nested or indented sub-items are not split into their own entries, but the full original text (including any nesting) is always available in `body`.
+
 `CHANGELOG.md` standards are inspired by [keepachangelog.com](http://keepachangelog.com/).
 
 ## Contributing
