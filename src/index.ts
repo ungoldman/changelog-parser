@@ -52,6 +52,12 @@ const subhead = /^###/
 const listitem = /^[*-]/
 const lineSplit = /\r\n?|\n/
 const htmlComment = /<!--[\s\S]*?-->/g
+// a `[token]` whose `]` is not immediately followed by `(` or `[`, i.e. not an inline or full reference link
+const standaloneBracket = /\[([^\][]*)\](?![([])/g
+// a link reference definition line: `[label]: url`
+const linkDefinition = /^\[([^[\]]+)\] *?:/
+const bracketOpen = String.fromCharCode(0)
+const bracketClose = String.fromCharCode(1)
 
 interface ParseState {
   log: Changelog
@@ -110,6 +116,14 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
 
   // strip HTML comments (single and multi-line) so they are not parsed as content
   const content = text.replace(htmlComment, '')
+  const lines = content.split(lineSplit)
+
+  // link reference definitions can appear anywhere in the document, so collect them first
+  const definedLabels = new Set<string>()
+  for (const line of lines) {
+    const def = linkDefinition.exec(line)
+    if (def) definedLabels.add(normalizeLabel(def[1]))
+  }
 
   const state: ParseState = {
     log: { versions: [] },
@@ -117,8 +131,8 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
     activeSubhead: null
   }
 
-  for (const line of content.split(lineSplit)) {
-    handleLine(state, options, line)
+  for (const line of lines) {
+    handleLine(state, options, line, definedLabels)
   }
 
   // push last version into log
@@ -136,7 +150,12 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
 }
 
 /** Handles a single line, mutating the parse state as needed. */
-function handleLine(state: ParseState, options: ChangelogOptions, line: string): void {
+function handleLine(
+  state: ParseState,
+  options: ChangelogOptions,
+  line: string,
+  definedLabels: Set<string>
+): void {
   // skip line if it's a link label
   if (line.match(/^\[[^[\]]*\] *?:/)) return
 
@@ -183,7 +202,7 @@ function handleLine(state: ParseState, options: ChangelogOptions, line: string):
 
     // handle case where current line is a 'list item':
     if (listitem.exec(line)) {
-      const log = options.removeMarkdown ? removeMarkdown(line) : line
+      const log = options.removeMarkdown ? stripMarkdown(line, definedLabels) : line
       // add line to 'catch all' array
       state.current.parsed._.push(log)
 
@@ -213,6 +232,29 @@ function pushCurrent(state: ParseState): void {
   const current = state.current as ChangelogVersion
   current.body = clean(current.body)
   state.log.versions.push(current)
+}
+
+// markdown reference labels are case-insensitive and collapse internal whitespace
+function normalizeLabel(label: string): string {
+  return label.trim().replace(/\s+/g, ' ').toLowerCase()
+}
+
+/**
+ * Strip markdown from a list item. A standalone `[token]` (not part of an inline or full
+ * reference link) is resolved against the document's link reference definitions: if `token`
+ * is defined elsewhere it is a shortcut reference link and renders as its text, so the
+ * brackets are dropped; otherwise it is literal text and is preserved. Preserving also
+ * sidesteps a remove-markdown bug where a standalone `[token]` followed by `(` is consumed
+ * as the next link's text.
+ */
+function stripMarkdown(line: string, definedLabels: Set<string>): string {
+  // fast path: with no brackets there is nothing to protect or resolve
+  if (!line.includes('[')) return removeMarkdown(line)
+  const protectedLine = line.replace(standaloneBracket, (_match, inner) => {
+    if (definedLabels.has(normalizeLabel(inner))) return inner
+    return `${bracketOpen}${inner}${bracketClose}`
+  })
+  return removeMarkdown(protectedLine).replaceAll(bracketOpen, '[').replaceAll(bracketClose, ']')
 }
 
 function clean(str: string | undefined): string {
