@@ -19,12 +19,7 @@ Tests are run with `npm test`. Please ensure all tests are passing before submit
 
 ## Code Style
 
-[![standard][standard-image]][standard-url]
-
-This repository uses [`standard`][standard-url] to maintain code style and consistency and avoid style arguments. `npm test` runs `standard` so you don't have to!
-
-[standard-image]: https://cdn.rawgit.com/feross/standard/master/badge.svg
-[standard-url]: https://github.com/feross/standard
+This repository uses [Biome](https://biomejs.dev/) for linting and formatting. `npm test` runs the linter, and `npm run format` applies fixes and formatting for you.
 
 ---
 

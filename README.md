@@ -26,10 +26,17 @@ npm install changelog-parser
 
 ## Usage
 
-This module exports a single function. It supports both callbacks and promises.
+This module is [ESM-only](https://nodejs.org/api/esm.html) and requires Node.js >= 22.12. It exports a single function, available as both a default and a named export. It supports both callbacks and promises.
 
 ```js
-var parseChangelog = require('changelog-parser')
+import parseChangelog from 'changelog-parser'
+// or: import { parseChangelog } from 'changelog-parser'
+```
+
+CommonJS consumers on Node.js >= 22.12 can still `require()` it, but the function is no longer the module itself:
+
+```js
+const { parseChangelog } = require('changelog-parser')
 ```
 
 ### Callback
@@ -37,7 +44,7 @@ var parseChangelog = require('changelog-parser')
 If provided with a callback, `parseChangelog` will invoke the function with the parsed changelog.
 
 ```js
-parseChangelog('path/to/CHANGELOG.md', function (err, result) {
+parseChangelog('path/to/CHANGELOG.md', (err, result) => {
   if (err) throw err
 
   // changelog object
@@ -51,11 +58,11 @@ If no callback is provided, `parseChangelog` will return a [Promise](https://dev
 
 ```js
 parseChangelog('path/to/CHANGELOG.md')
-  .then(function (result) {
+  .then((result) => {
     // changelog object
     console.log(result)
   })
-  .catch(function (err) {
+  .catch((err) => {
     // Whoops, something went wrong!
     console.error(err)
   })
