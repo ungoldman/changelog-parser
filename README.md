@@ -123,6 +123,14 @@ This will print the JSON object representing the change log to the terminal.
 
 Alternately you can run it without arguments and it will look for a `CHANGELOG.md` file in the working directory.
 
+## Migrating from 3.x
+
+4.0.0 is ESM-only. The API and output are otherwise unchanged.
+
+- **ESM**: `import parseChangelog from 'changelog-parser'`, or the named `import { parseChangelog }`.
+- **CommonJS**: a bare `require('changelog-parser')` no longer returns the function. On Node 22.12+, where `require()` of an ES module is supported, use `const { parseChangelog } = require('changelog-parser')`. On older Node, use a dynamic `import()`. Node 22.12+ is only needed for this path.
+- `body` and `description` are now always joined with `\n` rather than the OS line ending, so output no longer varies by platform.
+
 ## Standards
 
 This module assumes your change log is a [markdown](http://daringfireball.net/projects/markdown/syntax) file structured roughly like so:

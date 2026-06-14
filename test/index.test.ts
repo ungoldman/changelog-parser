@@ -92,13 +92,16 @@ test('does not duplicate a repeated subheading within a version', async () => {
   assert.deepStrictEqual(result.versions[0].parsed.Added, ['- a', '- b'])
 })
 
-test('drops a mid-stream entry with an empty (whitespace-only) heading', async () => {
-  // Documents existing behavior: a heading that trims to an empty title is not
-  // finalized when the next heading appears.
+test('keeps an entry with an empty (whitespace-only) heading', async () => {
+  // A heading that trims to an empty title still yields an entry, rather than
+  // being silently dropped when the next heading appears.
   const result = await parseChangelog({ text: '# t\n\n##  \n* a\n\n## 1.0.0\n* b\n' })
   assert.deepStrictEqual(
-    result.versions.map((v) => v.version),
-    ['1.0.0']
+    result.versions.map((v) => ({ version: v.version, title: v.title, items: v.parsed._ })),
+    [
+      { version: null, title: '', items: ['a'] },
+      { version: '1.0.0', title: '1.0.0', items: ['b'] }
+    ]
   )
 })
 
