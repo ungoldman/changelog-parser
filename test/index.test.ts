@@ -92,6 +92,26 @@ test('does not duplicate a repeated subheading within a version', async () => {
   assert.deepStrictEqual(result.versions[0].parsed.Added, ['- a', '- b'])
 })
 
+test('ignores HTML comments (#33)', async () => {
+  const text = [
+    '# Changelog',
+    '<!-- top-level comment -->',
+    '',
+    '## 1.0.0',
+    '<!--',
+    'multi-line comment',
+    '-->',
+    '* real item',
+    ''
+  ].join('\n')
+  const result = await parseChangelog({ text, removeMarkdown: false })
+
+  assert.equal(result.versions.length, 1)
+  assert.deepStrictEqual(result.versions[0].parsed._, ['* real item'])
+  assert.ok(!('description' in result))
+  assert.ok(!result.versions[0].body.includes('comment'))
+})
+
 test('keeps an entry with an empty (whitespace-only) heading', async () => {
   // A heading that trims to an empty title still yields an entry, rather than
   // being silently dropped when the next heading appears.
