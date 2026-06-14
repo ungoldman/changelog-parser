@@ -26,10 +26,17 @@ npm install changelog-parser
 
 ## Usage
 
-This module exports a single function. It supports both callbacks and promises.
+This module is [ESM-only](https://nodejs.org/api/esm.html) and requires Node.js >= 22.12. It exports a single function, available as both a default and a named export. It supports both callbacks and promises.
 
 ```js
-var parseChangelog = require('changelog-parser')
+import parseChangelog from 'changelog-parser'
+// or: import { parseChangelog } from 'changelog-parser'
+```
+
+CommonJS consumers on Node.js >= 22.12 can still `require()` it, but the function is no longer the module itself:
+
+```js
+const { parseChangelog } = require('changelog-parser')
 ```
 
 ### Callback
@@ -37,7 +44,7 @@ var parseChangelog = require('changelog-parser')
 If provided with a callback, `parseChangelog` will invoke the function with the parsed changelog.
 
 ```js
-parseChangelog('path/to/CHANGELOG.md', function (err, result) {
+parseChangelog('path/to/CHANGELOG.md', (err, result) => {
   if (err) throw err
 
   // changelog object
@@ -51,11 +58,11 @@ If no callback is provided, `parseChangelog` will return a [Promise](https://dev
 
 ```js
 parseChangelog('path/to/CHANGELOG.md')
-  .then(function (result) {
+  .then((result) => {
     // changelog object
     console.log(result)
   })
-  .catch(function (err) {
+  .catch((err) => {
     // Whoops, something went wrong!
     console.error(err)
   })
@@ -121,122 +128,131 @@ Alternately you can run it without arguments and it will look for a `CHANGELOG.m
 This module assumes your change log is a [markdown](http://daringfireball.net/projects/markdown/syntax) file structured roughly like so:
 
 ```markdown
-# changelog title
+# Changelog
 
-A cool description (optional).
+All notable changes to this project are documented in this file.
 
-## unreleased
-* foo
+## Unreleased
 
-## x.y.z - YYYY-MM-DD (or DD.MM.YYYY, D/M/YY, etc.)
-* bar
+* Work in progress.
 
-## [a.b.c]
+## 2.2.0-beta.1 - 2024-03-20
 
-### Changes
+* Pre-release builds get a version too.
 
-* Update API
-* Fix bug #1
+## [2.1.0] - 2024-03-15
 
-## 2.2.3-pre.1 - 2013-02-14
-* Update API
+### Added
 
-## 2.0.0-x.7.z.92 - 2013-02-14
-* bark bark
-* woof
-* arf
+* A `format` option, documented in [the README](https://example.com).
+* Support for **bold** entries.
 
-## v1.3.0
+### Fixed
 
-* make it so
+- A crash on empty input.
 
-## [1.2.3](link)
-* init
+## 2.0.0 (2024-01-02)
 
-[a.b.c]: http://altavista.com
+* Drop support for Node 12.
+
+# 1.5.0 - 02.11.2023
+
+* An older entry under an H1 heading with a `DD.MM.YYYY` date.
+
+## v1.0.0
+
+* First stable release.
+
+## [0.9.0](https://example.com/releases/0.9.0)
+
+* Initial public prototype.
+
+[2.1.0]: https://example.com/releases/2.1.0
 ```
 
 Parsing the above example will return the following object:
 
 ```js
 {
-  title: 'changelog title',
-  description: 'A cool description (optional).',
+  title: 'Changelog',
+  description: 'All notable changes to this project are documented in this file.',
   versions: [
     { version: null,
-      title: 'unreleased',
+      title: 'Unreleased',
       date: null,
-      body: '* foo',
+      body: '* Work in progress.',
       parsed: {
         _: [
-          'foo'
+          'Work in progress.'
         ]
       }
     },
-    { version: 'x.y.z',
-      title: 'x.y.z - YYYY-MM-DD',
-      date: null,
-      body: '* bar',
+    { version: '2.2.0-beta.1',
+      title: '2.2.0-beta.1 - 2024-03-20',
+      date: '2024-03-20',
+      body: '* Pre-release builds get a version too.',
       parsed: {
         _: [
-          'bar'
+          'Pre-release builds get a version too.'
         ]
       }
     },
-    { version: 'a.b.c',
-      title: '[a.b.c]',
-      date: null,
-      body: '### Changes\n\n* Update API\n* Fix bug #1',
+    { version: '2.1.0',
+      title: '[2.1.0] - 2024-03-15',
+      date: '2024-03-15',
+      body: '### Added\n\n* A `format` option, documented in [the README](https://example.com).\n* Support for **bold** entries.\n\n### Fixed\n\n- A crash on empty input.',
       parsed: {
         _: [
-          'Update API',
-          'Fix bug #1'
+          'A format option, documented in the README.',
+          'Support for bold entries.',
+          'A crash on empty input.'
         ],
-        Changes: [
-          'Update API',
-          'Fix bug #1'
+        Added: [
+          'A format option, documented in the README.',
+          'Support for bold entries.'
+        ],
+        Fixed: [
+          'A crash on empty input.'
         ]
       }
     },
-    { version: '2.2.3-pre.1',
-      title: '2.2.3-pre.1 - 2013-02-14',
-      date: '2013-02-14',
-      body: '* Update API',
+    { version: '2.0.0',
+      title: '2.0.0 (2024-01-02)',
+      date: '2024-01-02',
+      body: '* Drop support for Node 12.',
       parsed: {
         _: [
-          'Update API'
+          'Drop support for Node 12.'
         ]
       }
     },
-    { version: '2.0.0-x.7.z.92',
-      title: '2.0.0-x.7.z.92 - 2013-02-14',
-      date: '2013-02-14',
-      body: '* bark bark\n* woof\n* arf',
+    { version: '1.5.0',
+      title: '1.5.0 - 02.11.2023',
+      date: '02.11.2023',
+      body: '* An older entry under an H1 heading with a `DD.MM.YYYY` date.',
       parsed: {
         _: [
-          'bark bark',
-          'woof',
-          'arf'
+          'An older entry under an H1 heading with a DD.MM.YYYY date.'
         ]
       }
     },
-    { version: '1.3.0',
-      title: 'v1.3.0',
+    { version: '1.0.0',
+      title: 'v1.0.0',
       date: null,
-      body: '* make it so',
+      body: '* First stable release.',
       parsed: {
         _: [
-          'make it so'
+          'First stable release.'
         ]
       }
     },
-    { version: '1.2.3',
-      title: '[1.2.3](link)',
+    { version: '0.9.0',
+      title: '[0.9.0](https://example.com/releases/0.9.0)',
       date: null,
-      body: '* init',
+      body: '* Initial public prototype.',
       parsed: {
         _: [
-          'init'
+          'Initial public prototype.'
         ]
       }
     }
@@ -245,6 +261,8 @@ Parsing the above example will return the following object:
 ```
 
 Expects versions to be [semver](http://semver.org/) compliant, otherwise sets `version` to null.
+
+Both `#` and `##` headings are treated as versions. The version number is read from the heading whether it is bare (`2.1.0`), `v`-prefixed (`v1.0.0`), or wrapped in brackets and optionally linked (`[0.9.0](...)`), and dates are recognized in common formats such as `YYYY-MM-DD`, `DD.MM.YYYY`, and parenthesized `(YYYY-MM-DD)`.
 
 Each entry is available as an object in the `versions` array. The body of a given entry can be accessed using the following properties:
 
