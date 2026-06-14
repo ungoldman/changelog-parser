@@ -4,11 +4,11 @@
 
 # changelog-parser
 
+Change log parser for node.
+
 [![npm][npm-image]][npm-url]
 [![build][build-image]][build-url]
 [![downloads][downloads-image]][npm-url]
-
-Change log parser for node.
 
 [npm-image]: https://img.shields.io/npm/v/changelog-parser.svg
 [npm-url]: https://www.npmjs.com/package/changelog-parser
@@ -18,31 +18,45 @@ Change log parser for node.
 
 </div>
 
+## Features
+
+- Parses a `CHANGELOG.md` file (or raw text string) into a structured object: a title, an optional description, and an array of version entries.
+- Extracts each version's number, date, body, and list items, grouped by `### subheading`.
+- Promise-based, with a legacy Node-style callback also supported.
+- Optionally strips markdown from parsed entries.
+
+### Supported formats
+
+These common changelog formats are officially supported:
+
+- **[Keep a Changelog](https://keepachangelog.com/)**: `## [x.y.z] - YYYY-MM-DD` headings, `### Added` / `### Changed` / etc. sections
+- **[Conventional Changelog](https://github.com/conventional-changelog/conventional-changelog)**: `## [x.y.z](compare) (date)` headings, with or without top-level title
+- **[Release Please](https://github.com/googleapis/release-please)**: `## [x.y.z](compare) (date)` headings with `### ⚠ BREAKING CHANGES` section
+- **[Standard Version](https://github.com/conventional-changelog/standard-version)**: headings set by release type (`#` major, `##` minor, `###` patch)
+
 ## Install
 
 ```
 npm install changelog-parser
 ```
 
-## Supported formats
-
-`changelog-parser` parses these common changelog formats:
-
-- [Keep a Changelog](https://keepachangelog.com/): `## [x.y.z] - YYYY-MM-DD` headings with `### Added` / `### Changed` / etc. sections
-- [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog): `## [x.y.z](compare) (date)` headings, with or without a top-level title
-- [standard-version](https://github.com/conventional-changelog/standard-version): heading level set by release type (`#` major, `##` minor, `###` patch)
-- [release-please](https://github.com/googleapis/release-please): `## [x.y.z](compare) (date)` headings with a `### ⚠ BREAKING CHANGES` section
-
-Version headings may be `#`, `##`, or `###`, with or without a `[bracketed]` and/or linked version, and with a date in several formats. A document title (the first `# Heading` that is not itself a version) is optional.
-
 ## Usage
 
-This module is [ESM-only](https://nodejs.org/api/esm.html). It exports a single function, available as both a default and a named export. It supports both callbacks and promises.
+This module is [ESM-only](https://antfu.me/posts/move-on-to-esm-only). It exports a named `parseChangelog` function that parses a changelog and returns a `Promise`.
 
 ```js
-import parseChangelog from 'changelog-parser'
-// or: import { parseChangelog } from 'changelog-parser'
+import { parseChangelog } from 'changelog-parser'
+
+// async / await
+const changelog = await parseChangelog('path/to/CHANGELOG.md')
+
+// or as a promise
+parseChangelog('path/to/CHANGELOG.md')
+  .then((changelog) => console.log(changelog))
+  .catch((err) => console.error(err))
 ```
+
+A default export of the same function is also available (`import parseChangelog from 'changelog-parser'`).
 
 CommonJS consumers on Node.js >= 22.12 can still `require()` it, but the function is no longer the module itself:
 
@@ -52,76 +66,38 @@ const { parseChangelog } = require('changelog-parser')
 
 ### Callback
 
-If provided with a callback, `parseChangelog` will invoke the function with the parsed changelog.
+A Node-style callback is also supported. It was the original interface (the package predates native promises) and is kept for backwards compatibility. New code should use the returned promise.
 
 ```js
 parseChangelog('path/to/CHANGELOG.md', (err, result) => {
   if (err) throw err
 
-  // changelog object
   console.log(result)
 })
 ```
 
-### Promise
-
-If no callback is provided, `parseChangelog` will return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
-
-```js
-parseChangelog('path/to/CHANGELOG.md')
-  .then((result) => {
-    // changelog object
-    console.log(result)
-  })
-  .catch((err) => {
-    // Whoops, something went wrong!
-    console.error(err)
-  })
-```
-
 ### Options
 
-You can optionally provide a configuration object `parseChangelog` function.
+The first argument can be a path string or an options object (`string | ChangelogOptions`). You must provide either `filePath` or `text`.
 
-You must provide either `filePath` or `text`.
-
-#### filePath
-
-Path to changelog file.
-
-```js
-parseChangelog({
-  filePath: 'path/to/CHANGELOG.md'
-})
-```
-
-#### text
-
-Text of changelog file (you can use this instead of `filePath`).
-
-```js
-parseChangelog({
-  text: 'raw changelog text in string format'
-})
-```
-
-#### removeMarkdown
-
-Removes the markdown markup from the changelog entries by default. You can change its value to `false` to keep the markdown.
-
-```js
-parseChangelog({
-  filePath: 'path/to/CHANGELOG.md',
-  removeMarkdown: false // default: true
-})
+```ts
+interface ChangelogOptions {
+  /** Path to a changelog file. */
+  filePath?: string
+  /** Raw changelog text (alternative to `filePath`). */
+  text?: string
+  /** Strip markdown from parsed entries. Defaults to `true`. */
+  removeMarkdown?: boolean
+}
 ```
 
 ### Command-line interface
 
-There is also a command-line interface available if you install it with `-g`.
+There is also a command-line interface available.
 
-```
-npm install -g changelog-parser
+```shell
+npx changelog-parser <path-to-changelog.md> # invoke with npx
+npm install -g changelog-parser # or install globally
 ```
 
 This installs a program called `changelog-parser` that you simply pass a `CHANGELOG.md` file.
@@ -136,170 +112,100 @@ Alternately you can run it without arguments and it will look for a `CHANGELOG.m
 
 ## Migrating from 3.x
 
-4.0.0 is ESM-only. The API and output are otherwise unchanged.
+As of v4.0.0 this package is ESM-only. The API and output are otherwise unchanged.
 
 - **ESM**: `import parseChangelog from 'changelog-parser'`, or the named `import { parseChangelog }`.
 - **CommonJS**: a bare `require('changelog-parser')` no longer returns the function. On Node 22.12+, where `require()` of an ES module is supported, use `const { parseChangelog } = require('changelog-parser')`. On older Node, use a dynamic `import()`. Node 22.12+ is only needed for this path.
 - `body` and `description` are now always joined with `\n` rather than the OS line ending, so output no longer varies by platform.
 
-## Standards
+## Output
 
-This module assumes your change log is a [markdown](http://daringfireball.net/projects/markdown/syntax) file structured roughly like so:
+`parseChangelog` resolves to (and the callback receives) a `Changelog`. These types are exported.
+
+```ts
+interface Changelog {
+  /** The document title (the first `#` heading that is not itself a version), if present. */
+  title?: string
+  /** Free text between the title and the first version, if any. */
+  description?: string
+  /** Version entries, in document order. */
+  versions: ChangelogVersion[]
+}
+
+interface ChangelogVersion {
+  /** Semver string if the heading is semver-compliant, otherwise `null`. */
+  version: string | null
+  /** The raw heading text. */
+  title: string | null
+  /** Date parsed from the heading if present, otherwise `null`. */
+  date: string | null
+  /** All content under the heading, as a single string. */
+  body: string
+  /**
+   * List items grouped by subheading. The `_` key holds every list item;
+   * each `### Subheading` adds a key with the items beneath it.
+   */
+  parsed: Record<string, string[]>
+}
+```
+
+For example, this changelog:
 
 ```markdown
 # Changelog
 
-All notable changes to this project are documented in this file.
-
-## Unreleased
-
-* Work in progress.
-
-## 2.2.0-beta.1 - 2024-03-20
-
-* Pre-release builds get a version too.
-
-## [2.1.0] - 2024-03-15
+## [1.1.0] - 2024-03-15
 
 ### Added
 
-* A `format` option, documented in [the README](https://example.com).
-* Support for **bold** entries.
+* A `format` option.
 
 ### Fixed
 
-- A crash on empty input.
+* Squashed a bug.
 
-## 2.0.0 (2024-01-02)
+## [1.0.0] - 2024-01-01
 
-* Drop support for Node 12.
-
-# 1.5.0 - 02.11.2023
-
-* An older entry under an H1 heading with a `DD.MM.YYYY` date.
-
-## v1.0.0
-
-* First stable release.
-
-## [0.9.0](https://example.com/releases/0.9.0)
-
-* Initial public prototype.
-
-[2.1.0]: https://example.com/releases/2.1.0
+* First release.
 ```
 
-Parsing the above example will return the following object:
+parses to:
 
 ```js
 {
   title: 'Changelog',
-  description: 'All notable changes to this project are documented in this file.',
   versions: [
-    { version: null,
-      title: 'Unreleased',
-      date: null,
-      body: '* Work in progress.',
-      parsed: {
-        _: [
-          'Work in progress.'
-        ]
-      }
-    },
-    { version: '2.2.0-beta.1',
-      title: '2.2.0-beta.1 - 2024-03-20',
-      date: '2024-03-20',
-      body: '* Pre-release builds get a version too.',
-      parsed: {
-        _: [
-          'Pre-release builds get a version too.'
-        ]
-      }
-    },
-    { version: '2.1.0',
-      title: '[2.1.0] - 2024-03-15',
+    {
+      version: '1.1.0',
+      title: '[1.1.0] - 2024-03-15',
       date: '2024-03-15',
-      body: '### Added\n\n* A `format` option, documented in [the README](https://example.com).\n* Support for **bold** entries.\n\n### Fixed\n\n- A crash on empty input.',
+      body: '### Added\n\n* A `format` option.\n\n### Fixed\n\n* Squashed a bug.',
       parsed: {
-        _: [
-          'A format option, documented in the README.',
-          'Support for bold entries.',
-          'A crash on empty input.'
-        ],
-        Added: [
-          'A format option, documented in the README.',
-          'Support for bold entries.'
-        ],
-        Fixed: [
-          'A crash on empty input.'
-        ]
+        _: ['A format option.', 'Squashed a bug.'],
+        Added: ['A format option.'],
+        Fixed: ['Squashed a bug.']
       }
     },
-    { version: '2.0.0',
-      title: '2.0.0 (2024-01-02)',
-      date: '2024-01-02',
-      body: '* Drop support for Node 12.',
-      parsed: {
-        _: [
-          'Drop support for Node 12.'
-        ]
-      }
-    },
-    { version: '1.5.0',
-      title: '1.5.0 - 02.11.2023',
-      date: '02.11.2023',
-      body: '* An older entry under an H1 heading with a `DD.MM.YYYY` date.',
-      parsed: {
-        _: [
-          'An older entry under an H1 heading with a DD.MM.YYYY date.'
-        ]
-      }
-    },
-    { version: '1.0.0',
-      title: 'v1.0.0',
-      date: null,
-      body: '* First stable release.',
-      parsed: {
-        _: [
-          'First stable release.'
-        ]
-      }
-    },
-    { version: '0.9.0',
-      title: '[0.9.0](https://example.com/releases/0.9.0)',
-      date: null,
-      body: '* Initial public prototype.',
-      parsed: {
-        _: [
-          'Initial public prototype.'
-        ]
-      }
+    {
+      version: '1.0.0',
+      title: '[1.0.0] - 2024-01-01',
+      date: '2024-01-01',
+      body: '* First release.',
+      parsed: { _: ['First release.'] }
     }
   ]
 }
 ```
 
-Expects versions to be [semver](http://semver.org/) compliant, otherwise sets `version` to null.
+Version headings can be `#`, `##`, or `###`. A `##` is always a version. A `#` is a version too, unless it is the document title (the first `#` heading that is not itself a version). A `###` is treated as a version only when it looks like one, so conventional-changelog and standard-version patch headings are captured instead of being read as a `### Section`.
 
-Both `#` and `##` headings are treated as versions. The version number is read from the heading whether it is bare (`2.1.0`), `v`-prefixed (`v1.0.0`), or wrapped in brackets and optionally linked (`[0.9.0](...)`), and dates are recognized in common formats such as `YYYY-MM-DD`, `DD.MM.YYYY`, and parenthesized `(YYYY-MM-DD)`.
-
-Each entry is available as an object in the `versions` array. The body of a given entry can be accessed using the following properties:
-
-- `body` - A string containing all of the updates/changes/etc. for the current entry. This property includes both plain text and markdown.
-- `parsed` - An object which points to one or more arrays of data for the current entry. All data for the current entry is present in the array at key `_` (eg. `parsed._`). If the entry contains subheadings (eg. `### Added`, `### Changed`), then any items underneath each subheading will be present in an array at the corresponding key (eg. `parsed.Added`, `parsed.Changed`). Each array contains plain text.
+The version number is read whether the heading is bare (`2.1.0`), `v`-prefixed (`v1.0.0`), or wrapped in brackets and optionally linked (`[0.9.0](...)`). It is `null` when the heading is not [semver](https://semver.org/)-compliant (such as `Unreleased`). Dates are recognized in common formats including `YYYY-MM-DD`, `DD.MM.YYYY`, and parenthesized `(YYYY-MM-DD)`.
 
 `parsed` is flat: it captures one entry per top-level list item. Nested or indented sub-items are not split into their own entries, but the full original text (including any nesting) is always available in `body`.
-
-`CHANGELOG.md` standards are inspired by [keepachangelog.com](http://keepachangelog.com/).
 
 ## Contributing
 
 Contributions welcome! Please read the [contributing guidelines](CONTRIBUTING.md) first.
-
-## See Also
-
-- [changelog-init](https://github.com/bcomnes/changelog-init)
-- [gh-release](https://github.com/hypermodules/gh-release)
 
 ## License
 
