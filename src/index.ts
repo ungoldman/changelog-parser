@@ -51,6 +51,10 @@ const date = /.*[ ]\(?(\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?)\)?.*/
 const subhead = /^###/
 const listitem = /^[*-]/
 const lineSplit = /\r\n?|\n/
+// a heading (1-3 `#`) whose text starts with a version-like token: optional `[`/`v`, then a digit.
+// conventional-changelog and standard-version encode the bump level in the heading (# major,
+// ## minor, ### patch), so this tells a version heading apart from the title and from `### Section`.
+const versionHeading = /^#{1,3} ?\[?v?\d+\.\d/
 const htmlComment = /<!--[\s\S]*?-->/g
 // a `[token]` whose `]` is not immediately followed by `(` or `[`, i.e. not an inline or full reference link
 const standaloneBracket = /\[([^\][]*)\](?![([])/g
@@ -159,14 +163,14 @@ function handleLine(
   // skip line if it's a link label
   if (line.match(/^\[[^[\]]*\] *?:/)) return
 
-  // set title if it's there
-  if (!state.log.title && line.match(/^# ?[^#]/)) {
+  // set title if it's there: the first H1 that is not itself a version heading
+  if (!state.log.title && line.match(/^# ?[^#]/) && !versionHeading.test(line)) {
     state.log.title = line.substring(1).trim()
     return
   }
 
-  // new version found!
-  if (line.match(/^##? ?[^#]/)) {
+  // new version found! H1/H2 by level, plus a version-like H3 (conventional-changelog patch)
+  if (line.match(/^##? ?[^#]/) || versionHeading.test(line)) {
     // finalize the previous entry, including empty-title ones, matching the end-of-input flush
     if (state.current) pushCurrent(state)
 
@@ -176,7 +180,7 @@ function handleLine(
     const semverMatch = semver.exec(line)
     if (semverMatch) state.current.version = semverMatch[1]
 
-    state.current.title = line.substring(2).trim()
+    state.current.title = line.replace(/^#+\s*/, '').trim()
 
     const dateMatch = date.exec(state.current.title)
     if (dateMatch) state.current.date = dateMatch[1]
