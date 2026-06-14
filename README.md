@@ -24,6 +24,17 @@ Change log parser for node.
 npm install changelog-parser
 ```
 
+## Supported formats
+
+`changelog-parser` parses these common changelog formats:
+
+- [Keep a Changelog](https://keepachangelog.com/): `## [x.y.z] - YYYY-MM-DD` headings with `### Added` / `### Changed` / etc. sections
+- [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog): `## [x.y.z](compare) (date)` headings, with or without a top-level title
+- [standard-version](https://github.com/conventional-changelog/standard-version): heading level set by release type (`#` major, `##` minor, `###` patch)
+- [release-please](https://github.com/googleapis/release-please): `## [x.y.z](compare) (date)` headings with a `### ⚠ BREAKING CHANGES` section
+
+Version headings may be `#`, `##`, or `###`, with or without a `[bracketed]` and/or linked version, and with a date in several formats. A document title (the first `# Heading` that is not itself a version) is optional.
+
 ## Usage
 
 This module is [ESM-only](https://nodejs.org/api/esm.html) and requires Node.js >= 22.12. It exports a single function, available as both a default and a named export. It supports both callbacks and promises.
