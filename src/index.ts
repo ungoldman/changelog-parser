@@ -51,15 +51,15 @@ const date = /.*[ ]\(?(\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?)\)?.*/
 const subhead = /^###/
 const listitem = /^[*-]/
 const lineSplit = /\r\n?|\n/
-// a heading (1-3 `#`) whose text starts with a version-like token: optional `[`/`v`, then a digit.
-// conventional-changelog and standard-version encode the bump level in the heading (# major,
-// ## minor, ### patch), so this tells a version heading apart from the title and from `### Section`.
+// a heading (1-3 `#`) starting with a version-like token (optional `[`/`v`, then `N.N`).
+// some tools encode the bump level in heading depth (# major, ## minor, ### patch),
+// so a version-like `###` is a version rather than a `### Section`.
 const versionHeading = /^#{1,3} ?\[?v?\d+\.\d/
 const htmlComment = /<!--[\s\S]*?-->/g
-// a `[token]` whose `]` is not immediately followed by `(` or `[`, i.e. not an inline or full reference link
+// a `[token]` not immediately followed by `(` or `[`, i.e. not an inline or full reference link
 const standaloneBracket = /\[([^\][]*)\](?![([])/g
 // a link reference definition line: `[label]: url`
-const linkDefinition = /^\[([^[\]]+)\] *?:/
+const linkDefinition = /^\[([^[\]]*)\] *?:/
 const bracketOpen = String.fromCharCode(0)
 const bracketClose = String.fromCharCode(1)
 
@@ -118,15 +118,15 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
       ? options.text
       : await readFile(options.filePath as string, 'utf8')
 
-  // strip HTML comments (single and multi-line) so they are not parsed as content
+  // strip HTML comments so they are not parsed as content
   const content = text.replace(htmlComment, '')
   const lines = content.split(lineSplit)
 
-  // link reference definitions can appear anywhere in the document, so collect them first
+  // link reference definitions can appear anywhere, so collect them before parsing
   const definedLabels = new Set<string>()
   for (const line of lines) {
     const def = linkDefinition.exec(line)
-    if (def) definedLabels.add(normalizeLabel(def[1]))
+    if (def?.[1]) definedLabels.add(normalizeLabel(def[1]))
   }
 
   const state: ParseState = {
@@ -139,10 +139,9 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
     handleLine(state, options, line, definedLabels)
   }
 
-  // push last version into log
+  // flush the final version
   if (state.current) pushCurrent(state)
 
-  // clean up description
   const description = clean(state.log.description)
   if (description === '') {
     delete state.log.description
@@ -160,18 +159,18 @@ function handleLine(
   line: string,
   definedLabels: Set<string>
 ): void {
-  // skip line if it's a link label
-  if (line.match(/^\[[^[\]]*\] *?:/)) return
+  // skip link reference definition lines
+  if (linkDefinition.test(line)) return
 
-  // set title if it's there: the first H1 that is not itself a version heading
-  if (!state.log.title && line.match(/^# ?[^#]/) && !versionHeading.test(line)) {
+  // title: the first H1 that is not itself a version heading
+  if (!state.log.title && /^# ?[^#]/.test(line) && !versionHeading.test(line)) {
     state.log.title = line.substring(1).trim()
     return
   }
 
-  // new version found! H1/H2 by level, plus a version-like H3 (conventional-changelog patch)
-  if (line.match(/^##? ?[^#]/) || versionHeading.test(line)) {
-    // finalize the previous entry, including empty-title ones, matching the end-of-input flush
+  // new version: an H1 or H2, or a version-like H3
+  if (/^##? ?[^#]/.test(line) || versionHeading.test(line)) {
+    // finalize the previous entry, including empty-title ones
     if (state.current) pushCurrent(state)
 
     state.current = versionFactory()
@@ -192,10 +191,8 @@ function handleLine(
   if (state.current) {
     state.current.body += `${line}\n`
 
-    // handle case where current line is a 'subhead':
-    // - 'handleize' subhead.
-    // - add subhead to 'parsed' data if not already present.
-    if (subhead.exec(line)) {
+    // a subhead opens a new group in `parsed`
+    if (subhead.test(line)) {
       const key = line.replace('###', '').trim()
 
       if (!state.current.parsed[key]) {
@@ -204,13 +201,10 @@ function handleLine(
       }
     }
 
-    // handle case where current line is a 'list item':
-    if (listitem.exec(line)) {
+    // a list item goes into the catch-all group, and the active subhead if there is one
+    if (listitem.test(line)) {
       const log = options.removeMarkdown ? stripMarkdown(line, definedLabels) : line
-      // add line to 'catch all' array
       state.current.parsed._.push(log)
-
-      // add line to 'active subhead' if applicable (eg. 'Added', 'Changed', etc.)
       if (state.activeSubhead) {
         state.current.parsed[state.activeSubhead].push(log)
       }
@@ -244,12 +238,9 @@ function normalizeLabel(label: string): string {
 }
 
 /**
- * Strip markdown from a list item. A standalone `[token]` (not part of an inline or full
- * reference link) is resolved against the document's link reference definitions: if `token`
- * is defined elsewhere it is a shortcut reference link and renders as its text, so the
- * brackets are dropped; otherwise it is literal text and is preserved. Preserving also
- * sidesteps a remove-markdown bug where a standalone `[token]` followed by `(` is consumed
- * as the next link's text.
+ * Strip markdown from a list item, but keep a standalone `[token]` as literal text
+ * unless `token` is a defined link reference, in which case the brackets are dropped
+ * and it renders as the inner text.
  */
 function stripMarkdown(line: string, definedLabels: Set<string>): string {
   // fast path: with no brackets there is nothing to protect or resolve
@@ -262,16 +253,7 @@ function stripMarkdown(line: string, definedLabels: Set<string>): string {
 }
 
 function clean(str: string | undefined): string {
-  if (!str) return ''
-
-  // trim
-  str = str.trim()
-  // remove leading newlines
-  str = str.replace(/^\n*/, '')
-  // remove trailing newlines
-  str = str.replace(/\n*$/, '')
-
-  return str
+  return str ? str.trim() : ''
 }
 
 export default parseChangelog
