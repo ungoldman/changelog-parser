@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.0.0](https://github.com/ungoldman/changelog-parser/compare/v3.0.1...v4.0.0) (2026-06-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* The package is now ESM-only (previously CommonJS).
+
+### Bug Fixes
+
+* handle square brackets in entries ([#60](https://github.com/ungoldman/changelog-parser/issues/60)) ([cb11078](https://github.com/ungoldman/changelog-parser/commit/cb110783b1a64949cac5821c76960446c9ba4b89))
+* ignore HTML comments ([#59](https://github.com/ungoldman/changelog-parser/issues/59)) ([f1cf5a6](https://github.com/ungoldman/changelog-parser/commit/f1cf5a699260b25936b928dcf78613b6a34350de))
+* keep entries with whitespace-only headings ([#58](https://github.com/ungoldman/changelog-parser/issues/58)) ([21a3a48](https://github.com/ungoldman/changelog-parser/commit/21a3a4807b622fbff097514fa70469a951525103))
+* parse untitled changelogs and standard-version patch headings ([#61](https://github.com/ungoldman/changelog-parser/issues/61)) ([7244c9e](https://github.com/ungoldman/changelog-parser/commit/7244c9e783b4996b3aa4f5f274563b7e25b68673))
+
+
+### Build System
+
+* convert to TypeScript and ESM ([#56](https://github.com/ungoldman/changelog-parser/issues/56)) ([faf117c](https://github.com/ungoldman/changelog-parser/commit/faf117c15e2f58068d0eccde30977ccd2e371be2))
+
 ## [3.0.1](https://github.com/ungoldman/changelog-parser/compare/v3.0.0...v3.0.1) - 2022-12-23
 
 ### Fixes
