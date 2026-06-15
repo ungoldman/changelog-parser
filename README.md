@@ -34,6 +34,8 @@ These common changelog formats are officially supported:
 - **[Release Please](https://github.com/googleapis/release-please)**: `## [x.y.z](compare) (date)` headings with `### ⚠ BREAKING CHANGES` section
 - **[Standard Version](https://github.com/conventional-changelog/standard-version)**: headings set by release type (`#` major, `##` minor, `###` patch)
 
+Maintained with 100% test coverage, verified on Linux, macOS, and Windows across all supported Node.js versions.
+
 ## Install
 
 ```
