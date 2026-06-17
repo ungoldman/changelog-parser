@@ -47,14 +47,33 @@ const defaultOptions: Required<Pick<ChangelogOptions, 'removeMarkdown'>> = {
 
 // patterns
 const semver = /\[?v?([\w\d.-]+\.[\w\d.-]+[a-zA-Z0-9])\]?/
-const date = /.*[ ]\(?(\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?)\)?.*/
+// a numeric date preceded by a space: `2024-03-15`, `15.03.2024`, `(2024-03-15)`
+const numericDate = /.*[ ]\(?(\d\d?\d?\d?[-/.]\d\d?[-/.]\d\d?\d?\d?)\)?.*/
+// textual dates, English month names: `20 January 2021` or `January 20, 2021`
+const dayMonthYear = /(\d{1,2}) ([A-Za-z]+) (\d{4})/
+const monthDayYear = /([A-Za-z]+) (\d{1,2}),? (\d{4})/
+const months: Record<string, string> = {
+  jan: '01',
+  feb: '02',
+  mar: '03',
+  apr: '04',
+  may: '05',
+  jun: '06',
+  jul: '07',
+  aug: '08',
+  sep: '09',
+  oct: '10',
+  nov: '11',
+  dec: '12'
+}
 const subhead = /^###/
 const listitem = /^[*-]/
 const lineSplit = /\r\n?|\n/
-// a heading (1-3 `#`) starting with a version-like token (optional `[`/`v`, then `N.N`).
-// some tools encode the bump level in heading depth (# major, ## minor, ### patch),
-// so a version-like `###` is a version rather than a `### Section`.
-const versionHeading = /^#{1,3} ?\[?v?\d+\.\d/
+// a heading at any level (1-6 `#`) whose text starts with a version-like token
+// (optional `[`/`v`, then `N.N`). depth is irrelevant: tools vary (`##` keepachangelog,
+// `###` standard-version patch, `####` auto-changelog), so any version-like heading is
+// a version rather than a `### Section`.
+const versionHeading = /^#{1,6} ?\[?v?\d+\.\d/
 const htmlComment = /<!--[\s\S]*?-->/g
 // a `[token]` not immediately followed by `(` or `[`, i.e. not an inline or full reference link
 const standaloneBracket = /\[([^\][]*)\](?![([])/g
@@ -180,9 +199,7 @@ function handleLine(
     if (semverMatch) state.current.version = semverMatch[1]
 
     state.current.title = line.replace(/^#+\s*/, '').trim()
-
-    const dateMatch = date.exec(state.current.title)
-    if (dateMatch) state.current.date = dateMatch[1]
+    state.current.date = parseDate(state.current.title)
 
     return
   }
@@ -190,6 +207,15 @@ function handleLine(
   // deal with body or description content
   if (state.current) {
     state.current.body += `${line}\n`
+
+    // a blockquote directly under the heading may carry the date (e.g. auto-changelog)
+    if (
+      state.current.date === null &&
+      state.current.parsed._.length === 0 &&
+      line.startsWith('>')
+    ) {
+      state.current.date = parseDate(line)
+    }
 
     // a subhead opens a new group in `parsed`
     if (subhead.test(line)) {
@@ -250,6 +276,26 @@ function stripMarkdown(line: string, definedLabels: Set<string>): string {
     return `${bracketOpen}${inner}${bracketClose}`
   })
   return removeMarkdown(protectedLine).replaceAll(bracketOpen, '[').replaceAll(bracketClose, ']')
+}
+
+// extract a date from a heading or a blockquote line, numeric or textual; null if none
+function parseDate(text: string): string | null {
+  const numeric = numericDate.exec(text)
+  if (numeric) return numeric[1]
+
+  const dmy = dayMonthYear.exec(text)
+  if (dmy) return buildDate(dmy[3], dmy[2], dmy[1])
+
+  const mdy = monthDayYear.exec(text)
+  if (mdy) return buildDate(mdy[3], mdy[1], mdy[2])
+
+  return null
+}
+
+// assemble `YYYY-MM-DD` from parts; null when the month name is unknown
+function buildDate(year: string, monthName: string, day: string): string | null {
+  const month = months[monthName.slice(0, 3).toLowerCase()]
+  return month ? `${year}-${month}-${day.padStart(2, '0')}` : null
 }
 
 function clean(str: string | undefined): string {
