@@ -126,6 +126,49 @@ test('keeps an entry with an empty (whitespace-only) heading', async () => {
   )
 })
 
+test('recognizes a version-like heading at any depth', async () => {
+  // a version-like heading is a version regardless of level (auto-changelog uses ####),
+  // while a non-version ### remains a section
+  const r = await parseChangelog({ text: '# t\n\n#### 2.0.0\n\n### Added\n- a\n' })
+  assert.deepStrictEqual(
+    r.versions.map((v) => v.version),
+    ['2.0.0']
+  )
+  assert.deepStrictEqual(r.versions[0].parsed.Added, ['a'])
+})
+
+test('reads a textual date from a heading (Month D, YYYY)', async () => {
+  const r = await parseChangelog({ text: '# t\n\n## [1.0.0] - January 20, 2021\n* a\n' })
+  assert.equal(r.versions[0].date, '2021-01-20')
+})
+
+test('reads a date from a blockquote under the heading', async () => {
+  const r = await parseChangelog({ text: '# t\n\n## 1.0.0\n\n> 5 March 2023\n\n* a\n' })
+  assert.equal(r.versions[0].date, '2023-03-05')
+})
+
+test('leaves the date null for an unknown month name', async () => {
+  const r = await parseChangelog({ text: '# t\n\n## 1.0.0\n\n> 20 Foo 2021\n\n* a\n' })
+  assert.equal(r.versions[0].date, null)
+})
+
+test('leaves the date null for a non-date blockquote', async () => {
+  const r = await parseChangelog({ text: '# t\n\n## 1.0.0\n\n> just a note\n\n* a\n' })
+  assert.equal(r.versions[0].date, null)
+})
+
+test('a heading date is not overridden by a later blockquote', async () => {
+  const r = await parseChangelog({
+    text: '# t\n\n## [1.0.0] - 2024-01-02\n\n> 5 March 2023\n\n* a\n'
+  })
+  assert.equal(r.versions[0].date, '2024-01-02')
+})
+
+test('a blockquote after content is not read as the date', async () => {
+  const r = await parseChangelog({ text: '# t\n\n## 1.0.0\n\n* a\n\n> 5 March 2023\n' })
+  assert.equal(r.versions[0].date, null)
+})
+
 test('parses a CRLF file identically to LF (#34)', async () => {
   const lf = readFileSync(filePath, 'utf8')
   const crlf = lf.replace(/\n/g, '\r\n')
