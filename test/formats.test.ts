@@ -54,6 +54,26 @@ test('standard-version (# major, ## minor, ### patch)', async () => {
   assert.deepStrictEqual(r.versions[1].parsed['Bug Fixes'], ['a patch fix'])
 })
 
+test('auto-changelog (#### headings, blockquote dates)', async () => {
+  const r = await parse('auto-changelog.md')
+  // auto-changelog uses an h3 header rather than an h1, so there is no document title
+  assert.equal(r.title, undefined)
+  assert.match(r.description ?? '', /All notable changes/)
+  // #### version headings are recognized, linked or bare (the first release has no
+  // prior tag to compare against, so auto-changelog emits a bare `#### v1.0.0`)
+  assert.deepStrictEqual(
+    r.versions.map((v) => v.version),
+    ['1.1.0', '1.0.0']
+  )
+  assert.equal(r.versions[1].title, 'v1.0.0')
+  // dates come from the `> 5 March 2023` blockquote under each heading
+  assert.deepStrictEqual(
+    r.versions.map((v) => v.date),
+    ['2023-03-05', '2023-01-01']
+  )
+  assert.deepStrictEqual(r.versions[0].parsed._, ['add a format option b203a37'])
+})
+
 test('release-please', async () => {
   const r = await parse('release-please.md')
   assert.equal(r.title, 'Changelog')
