@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.1.0](https://github.com/ungoldman/changelog-parser/compare/v4.0.0...v4.1.0) (2026-06-17)
+
+
+### Features
+
+* add support for auto-changelog format ([#66](https://github.com/ungoldman/changelog-parser/issues/66)) ([26ef5b4](https://github.com/ungoldman/changelog-parser/commit/26ef5b4ee09631047ea60863db36ed932e3ac0f6))
+
 ## [4.0.0](https://github.com/ungoldman/changelog-parser/compare/v3.0.1...v4.0.0) (2026-06-15)
 
 
