@@ -33,6 +33,7 @@ These common changelog formats are officially supported:
 - **[Conventional Changelog](https://github.com/conventional-changelog/conventional-changelog)**: `## [x.y.z](compare) (date)` headings, with or without top-level title
 - **[Release Please](https://github.com/googleapis/release-please)**: `## [x.y.z](compare) (date)` headings with `### ⚠ BREAKING CHANGES` section
 - **[Standard Version](https://github.com/conventional-changelog/standard-version)**: headings set by release type (`#` major, `##` minor, `###` patch)
+- **[auto-changelog](https://github.com/CookPete/auto-changelog)**: `#### [vx.y.z](compare)` headings with the date on a `> ...` blockquote line
 
 Maintained with 100% test coverage, verified on Linux, macOS, and Windows across all supported Node.js versions.
 
@@ -199,9 +200,9 @@ parses to:
 }
 ```
 
-Version headings can be `#`, `##`, or `###`. A `##` is always a version. A `#` is a version too, unless it is the document title (the first `#` heading that is not itself a version). A `###` is treated as a version only when it looks like one, so conventional-changelog and standard-version patch headings are captured instead of being read as a `### Section`.
+A version heading can be at any level (`#` through `######`). A `#` or `##` is always a version, except a `#` that is the document title (the first `#` heading that is not itself a version). At `###` and deeper, a heading is a version only when it looks like one, so conventional-changelog / standard-version patch headings (`###`) and auto-changelog version headings (`####`) are captured, while a `### Section` such as `### Added` is not.
 
-The version number is read whether the heading is bare (`2.1.0`), `v`-prefixed (`v1.0.0`), or wrapped in brackets and optionally linked (`[0.9.0](...)`). It is `null` when the heading is not [semver](https://semver.org/)-compliant (such as `Unreleased`). Dates are recognized in common formats including `YYYY-MM-DD`, `DD.MM.YYYY`, and parenthesized `(YYYY-MM-DD)`.
+The version number is read whether the heading is bare (`2.1.0`), `v`-prefixed (`v1.0.0`), or wrapped in brackets and optionally linked (`[0.9.0](...)`). It is `null` when the heading is not [semver](https://semver.org/)-compliant (such as `Unreleased`). Dates are recognized in common numeric formats (`YYYY-MM-DD`, `DD.MM.YYYY`, parenthesized `(YYYY-MM-DD)`) and textual English formats (`20 January 2021`, `January 20, 2021`). The date is taken from the heading, or from a `>` blockquote line directly beneath it when the heading carries none (as auto-changelog writes them).
 
 `parsed` is flat: it captures one entry per top-level list item. Nested or indented sub-items are not split into their own entries, but the full original text (including any nesting) is always available in `body`.
 
