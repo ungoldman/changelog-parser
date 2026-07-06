@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./log.png">
+<img src="./logo.png" width="120" height="120" alt="wood">
 
 # changelog-parser
 
@@ -214,4 +214,4 @@ Contributions welcome! Please read the [contributing guidelines](CONTRIBUTING.md
 
 [ISC](LICENSE.md)
 
-Log image is from [emojipedia](https://emojipedia.org/wood/).
+The logo is the wood emoji, rendered with [emoji2png](https://github.com/ungoldman/emoji2png).
