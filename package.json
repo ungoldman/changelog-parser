@@ -19,7 +19,7 @@
     "Andy Edwards <jedwards@fastmail.com>"
   ],
   "dependencies": {
-    "remove-markdown": "^0.6.4"
+    "remove-markdown": "^0.7.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
