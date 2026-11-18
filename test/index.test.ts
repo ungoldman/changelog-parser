@@ -256,14 +256,23 @@ test('a blockquote after content is not read as the date', async () => {
 
 test('does not read the version as the date (#86)', async () => {
   const r = await parseChangelog({
-    text: '# t\n\n## Version 1.0.0\n\n## Release 2.1.0 (2024-05-01)\n\n## Release 15.03.2024 16.03.2024\n'
+    text: [
+      '# t',
+      '## Version 1.0.0',
+      '## Version 2.0.0-rc.1',
+      '## Release 2.1.0 (2024-05-01)',
+      '## Release 15.03.2024 16.03.2024',
+      '## Release 2024.05.01 (2024.05.01)'
+    ].join('\n')
   })
   assert.deepStrictEqual(
     r.versions.map((v) => [v.version, v.date]),
     [
       ['1.0.0', null],
+      ['2.0.0-rc.1', null],
       ['2.1.0', '2024-05-01'],
-      ['15.03.2024', '16.03.2024']
+      ['15.03.2024', '16.03.2024'],
+      ['2024.05.01', '2024.05.01']
     ]
   )
 })

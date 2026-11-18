@@ -253,10 +253,11 @@ function handleLine(
     const semverMatch = semver.exec(line)
     if (semverMatch) state.current.version = semverMatch[1]
 
-    state.current.title = line.replace(/^#+\s*/, '').trim()
-    // `numericDate` also matches a dotted version, as in `## Version 1.0.0`
-    const date = parseDate(state.current.title)
-    state.current.date = date === state.current.version ? null : date
+    const title = line.replace(/^#+\s*/, '').trim()
+    const { version } = state.current
+    state.current.title = title
+    // drop the version first: `numericDate` also matches a dotted version, as in `## Version 1.0.0`
+    state.current.date = parseDate(version ? title.replace(version, '') : title)
 
     return
   }
