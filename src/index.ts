@@ -75,6 +75,9 @@ const lineSplit = /\r\n?|\n/
 // a version rather than a `### Section`.
 const versionHeading = /^#{1,6} ?\[?v?\d+\.\d/
 const htmlComment = /<!--[\s\S]*?-->/g
+// a code fence opener: 3+ backticks (no backtick in the info string) or 3+ tildes
+const fenceOpen = /^ {0,3}(`{3,}(?=[^`]*$)|~{3,})/
+const fenceClose = /^ {0,3}(`{3,}|~{3,})[ \t]*$/
 // a `[token]` not immediately followed by `(` or `[`, i.e. not an inline or full reference link
 const standaloneBracket = /\[([^\][]*)\](?![([])/g
 // a link reference definition line: `[label]: url`
@@ -137,14 +140,12 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
       ? options.text
       : await readFile(options.filePath as string, 'utf8')
 
-  // strip HTML comments so they are not parsed as content
-  const content = text.replace(htmlComment, '')
-  const lines = content.split(lineSplit)
+  const lines = splitLines(text)
 
   // link reference definitions can appear anywhere, so collect them before parsing
   const definedLabels = new Set<string>()
-  for (const line of lines) {
-    const def = linkDefinition.exec(line)
+  for (const { text: line, code } of lines) {
+    const def = code ? null : linkDefinition.exec(line)
     if (def?.[1]) definedLabels.add(normalizeLabel(def[1]))
   }
 
@@ -154,8 +155,8 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
     activeSubhead: null
   }
 
-  for (const line of lines) {
-    handleLine(state, options, line, definedLabels)
+  for (const { text: line, code } of lines) {
+    handleLine(state, options, line, code, definedLabels)
   }
 
   // flush the final version
@@ -171,13 +172,67 @@ async function parse(options: ChangelogOptions): Promise<Changelog> {
   return state.log
 }
 
+/**
+ * Splits text into lines, flagging fenced code. HTML comments are stripped outside
+ * fences, and a fence marker inside a comment opens no fence.
+ */
+function splitLines(text: string): { text: string; code: boolean }[] {
+  const out: { text: string; code: boolean }[] = []
+  let prose: string[] = []
+  let fence = ''
+
+  const flushProse = () => {
+    if (prose.length === 0) return
+    for (const line of prose.join('\n').replace(htmlComment, '').split('\n')) {
+      out.push({ text: line, code: false })
+    }
+    prose = []
+  }
+
+  for (const line of text.split(lineSplit)) {
+    if (fence) {
+      out.push({ text: line, code: true })
+      const close = fenceClose.exec(line)
+      if (close && close[1][0] === fence[0] && close[1].length >= fence.length) fence = ''
+      continue
+    }
+
+    const open = fenceOpen.exec(line)
+    if (open && !inComment(prose)) {
+      flushProse()
+      fence = open[1]
+      out.push({ text: line, code: true })
+      continue
+    }
+
+    prose.push(line)
+  }
+
+  flushProse()
+  return out
+}
+
+// whether the lines end inside an unclosed `<!--`, matching how `htmlComment` pairs them
+function inComment(lines: string[]): boolean {
+  const joined = lines.join('\n')
+  const open = joined.lastIndexOf('<!--')
+  return open !== -1 && !joined.includes('-->', open + 4)
+}
+
 /** Handles a single line, mutating the parse state as needed. */
 function handleLine(
   state: ParseState,
   options: ChangelogOptions,
   line: string,
+  code: boolean,
   definedLabels: Set<string>
 ): void {
+  // fenced code is body text, never a heading, item, or definition
+  if (code) {
+    appendLine(state, line)
+    return
+  }
+
   // skip link reference definition lines
   if (linkDefinition.test(line)) return
 
@@ -205,36 +260,37 @@ function handleLine(
   }
 
   // deal with body or description content
+  appendLine(state, line)
+  if (!state.current) return
+
+  // a blockquote directly under the heading may carry the date (e.g. auto-changelog)
+  if (state.current.date === null && state.current.parsed._.length === 0 && line.startsWith('>')) {
+    state.current.date = parseDate(line)
+  }
+
+  // a subhead opens a new group in `parsed`
+  if (subhead.test(line)) {
+    const key = line.replace('###', '').trim()
+
+    if (!state.current.parsed[key]) {
+      state.current.parsed[key] = []
+      state.activeSubhead = key
+    }
+  }
+
+  // a list item goes into the catch-all group, and the active subhead if there is one
+  if (listitem.test(line)) {
+    const log = options.removeMarkdown ? stripMarkdown(line, definedLabels) : line
+    state.current.parsed._.push(log)
+    if (state.activeSubhead) {
+      state.current.parsed[state.activeSubhead].push(log)
+    }
+  }
+}
+
+function appendLine(state: ParseState, line: string): void {
   if (state.current) {
     state.current.body += `${line}\n`
-
-    // a blockquote directly under the heading may carry the date (e.g. auto-changelog)
-    if (
-      state.current.date === null &&
-      state.current.parsed._.length === 0 &&
-      line.startsWith('>')
-    ) {
-      state.current.date = parseDate(line)
-    }
-
-    // a subhead opens a new group in `parsed`
-    if (subhead.test(line)) {
-      const key = line.replace('###', '').trim()
-
-      if (!state.current.parsed[key]) {
-        state.current.parsed[key] = []
-        state.activeSubhead = key
-      }
-    }
-
-    // a list item goes into the catch-all group, and the active subhead if there is one
-    if (listitem.test(line)) {
-      const log = options.removeMarkdown ? stripMarkdown(line, definedLabels) : line
-      state.current.parsed._.push(log)
-      if (state.activeSubhead) {
-        state.current.parsed[state.activeSubhead].push(log)
-      }
-    }
   } else {
     state.log.description = `${state.log.description || ''}${line}\n`
   }
