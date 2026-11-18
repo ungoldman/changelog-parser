@@ -113,6 +113,108 @@ test('ignores HTML comments (#33)', async () => {
   assert.ok(!result.versions[0].body.includes('comment'))
 })
 
+test('treats fenced code as body text (#86)', async () => {
+  const text = [
+    '# Changelog',
+    '',
+    '## 2.0.0 - 2024-05-01',
+    '- New config format:',
+    '',
+    '```sh',
+    '# migrate your config',
+    '- not an item',
+    'npx tool migrate',
+    '```',
+    '',
+    '- Dropped Node 16',
+    '',
+    '## 1.0.0',
+    '- first',
+    ''
+  ].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.deepStrictEqual(
+    result.versions.map((v) => v.version),
+    ['2.0.0', '1.0.0']
+  )
+  assert.equal(
+    result.versions[0].body,
+    '- New config format:\n\n```sh\n# migrate your config\n- not an item\nnpx tool migrate\n```\n\n- Dropped Node 16'
+  )
+  assert.deepStrictEqual(result.versions[0].parsed._, ['New config format:', 'Dropped Node 16'])
+})
+
+test('closes a fence only on its own marker, at least as long', async () => {
+  const text = ['# t', '## 1.0.0', '~~~~ text', '```', '~~~', '## 0.0.1', '~~~~', '- after'].join(
+    '\n'
+  )
+  const result = await parseChangelog({ text })
+
+  assert.equal(result.versions.length, 1)
+  assert.deepStrictEqual(result.versions[0].parsed._, ['after'])
+})
+
+test('keeps HTML comments and link definitions inside a fence', async () => {
+  const text = [
+    '# t',
+    '## 1.0.0',
+    '- see [x]',
+    '```',
+    '<!-- kept -->',
+    '[x]: https://example.com',
+    '```'
+  ].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.deepStrictEqual(result.versions[0].parsed._, ['see [x]'])
+  assert.ok(result.versions[0].body.includes('<!-- kept -->\n[x]: https://example.com'))
+})
+
+test('a fence marker inside an HTML comment opens no fence', async () => {
+  const text = ['# t', '<!--', '```', '-->', '## 1.0.0', '- a'].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.deepStrictEqual(result.versions[0].parsed._, ['a'])
+})
+
+test('an unclosed `<!--` does not stop a later fence from opening', async () => {
+  const text = [
+    '# t',
+    '## 1.0.0',
+    '- Support `<!--` in input',
+    '```md',
+    '## 0.9.0',
+    '- fake',
+    '```',
+    '- real'
+  ].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.equal(result.versions.length, 1)
+  assert.deepStrictEqual(result.versions[0].parsed._, ['Support <!-- in input', 'real'])
+})
+
+test('an unclosed fence runs to the end, and adjacent fences stay separate', async () => {
+  const text = [
+    '# t',
+    '## 1.0.0',
+    '```',
+    'a',
+    '```',
+    '```',
+    'b',
+    '```',
+    '- c',
+    '```',
+    '## 2.0.0'
+  ].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.equal(result.versions.length, 1)
+  assert.deepStrictEqual(result.versions[0].parsed._, ['c'])
+})
+
 test('keeps an entry with an empty (whitespace-only) heading', async () => {
   // A heading that trims to an empty title still yields an entry, rather than
   // being silently dropped when the next heading appears.
@@ -167,6 +269,29 @@ test('a heading date is not overridden by a later blockquote', async () => {
 test('a blockquote after content is not read as the date', async () => {
   const r = await parseChangelog({ text: '# t\n\n## 1.0.0\n\n* a\n\n> 5 March 2023\n' })
   assert.equal(r.versions[0].date, null)
+})
+
+test('does not read the version as the date (#86)', async () => {
+  const r = await parseChangelog({
+    text: [
+      '# t',
+      '## Version 1.0.0',
+      '## Version 2.0.0-rc.1',
+      '## Release 2.1.0 (2024-05-01)',
+      '## Release 15.03.2024 16.03.2024',
+      '## Release 2024.05.01 (2024.05.01)'
+    ].join('\n')
+  })
+  assert.deepStrictEqual(
+    r.versions.map((v) => [v.version, v.date]),
+    [
+      ['1.0.0', null],
+      ['2.0.0-rc.1', null],
+      ['2.1.0', '2024-05-01'],
+      ['15.03.2024', '16.03.2024'],
+      ['2024.05.01', '2024.05.01']
+    ]
+  )
 })
 
 test('parses a CRLF file identically to LF (#34)', async () => {
