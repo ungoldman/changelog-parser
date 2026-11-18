@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.1.1](https://github.com/ungoldman/changelog-parser/compare/v4.1.0...v4.1.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* handle code fences and version-only dates ([#87](https://github.com/ungoldman/changelog-parser/issues/87)) ([d170c86](https://github.com/ungoldman/changelog-parser/commit/d170c867f3605dbcbed8320d68ccff81f0d13efe))
+
 ## [4.1.0](https://github.com/ungoldman/changelog-parser/compare/v4.0.0...v4.1.0) (2026-06-17)
 
 
