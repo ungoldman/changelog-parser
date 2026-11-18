@@ -254,6 +254,20 @@ test('a blockquote after content is not read as the date', async () => {
   assert.equal(r.versions[0].date, null)
 })
 
+test('does not read the version as the date (#86)', async () => {
+  const r = await parseChangelog({
+    text: '# t\n\n## Version 1.0.0\n\n## Release 2.1.0 (2024-05-01)\n\n## Release 15.03.2024 16.03.2024\n'
+  })
+  assert.deepStrictEqual(
+    r.versions.map((v) => [v.version, v.date]),
+    [
+      ['1.0.0', null],
+      ['2.1.0', '2024-05-01'],
+      ['15.03.2024', '16.03.2024']
+    ]
+  )
+})
+
 test('parses a CRLF file identically to LF (#34)', async () => {
   const lf = readFileSync(filePath, 'utf8')
   const crlf = lf.replace(/\n/g, '\r\n')
