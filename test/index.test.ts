@@ -178,6 +178,23 @@ test('a fence marker inside an HTML comment opens no fence', async () => {
   assert.deepStrictEqual(result.versions[0].parsed._, ['a'])
 })
 
+test('an unclosed `<!--` does not stop a later fence from opening', async () => {
+  const text = [
+    '# t',
+    '## 1.0.0',
+    '- Support `<!--` in input',
+    '```md',
+    '## 0.9.0',
+    '- fake',
+    '```',
+    '- real'
+  ].join('\n')
+  const result = await parseChangelog({ text })
+
+  assert.equal(result.versions.length, 1)
+  assert.deepStrictEqual(result.versions[0].parsed._, ['Support <!-- in input', 'real'])
+})
+
 test('an unclosed fence runs to the end, and adjacent fences stay separate', async () => {
   const text = [
     '# t',

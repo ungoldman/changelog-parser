@@ -189,7 +189,14 @@ function splitLines(text: string): { text: string; code: boolean }[] {
     prose = []
   }
 
-  for (const line of text.split(lineSplit)) {
+  const lines = text.split(lineSplit)
+  // a `<!--` with no `-->` after it is never stripped, so it is plain text
+  let lastClose = -1
+  for (const [i, line] of lines.entries()) {
+    if (line.includes('-->')) lastClose = i
+  }
+
+  for (const [i, line] of lines.entries()) {
     if (fence) {
       out.push({ text: line, code: true })
       const close = fenceClose.exec(line)
@@ -198,7 +205,7 @@ function splitLines(text: string): { text: string; code: boolean }[] {
     }
 
     const open = fenceOpen.exec(line)
-    if (open && !inComment(prose)) {
+    if (open && !(i <= lastClose && inComment(prose))) {
       flushProse()
       fence = open[1]
       out.push({ text: line, code: true })
